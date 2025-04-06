@@ -2,3 +2,4 @@
 cmake-build-debug
 build
 bmps/result
+test/config.h
