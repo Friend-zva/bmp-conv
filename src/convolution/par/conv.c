@@ -17,12 +17,10 @@ typedef struct {
     Options opt;
 } data_thread;
 
-void *conv_split(void *_data) {
+void *conv_row_par(void *_data) {
     data_thread *data = (data_thread *) _data;
     int id = (int) data->id;
     BMP *bmp_source = (BMP *) data->bmp_source;
-    BMP *bmp_conv = (BMP *) data->bmp_conv;
-    Options opt = (Options) data->opt;
 
     const int width = get_width(bmp_source), height = get_height(bmp_source);
     int y_start = step * id % width;
@@ -40,7 +38,38 @@ void *conv_split(void *_data) {
     int count = 0;
     for (int y = y_start; y < height; y++)
         for (int x = x_start; x < width; x++) {
-            apply_filter(bmp_source, bmp_conv, opt, x, y);
+            apply_filter(bmp_source, (BMP *) data->bmp_conv, (Options) data->opt, x, y);
+
+            count++;
+            if (count == step)
+                return NULL;
+        }
+
+    return NULL;
+}
+
+void *conv_column_par(void *_data) { // test?!
+    data_thread *data = (data_thread *) _data;
+    int id = (int) data->id;
+    BMP *bmp_source = (BMP *) data->bmp_source;
+
+    const int width = get_width(bmp_source), height = get_height(bmp_source);
+    int x_start = step * id % height;
+    int y_start = step * id / width;
+
+    if (inaccuracy > id) {
+        if (y_start != height - 1)
+            y_start++;
+        else {
+            y_start = 0;
+            x_start++;
+        }
+    }
+
+    int count = 0;
+    for (int x = x_start; x < width; x++)
+        for (int y = y_start; y < height; y++) {
+            apply_filter(bmp_source, (BMP *) data->bmp_conv, (Options) data->opt, x, y);
 
             count++;
             if (count == step)
@@ -70,7 +99,11 @@ BMP *conv_par(BMP *bmp_source, Options opt) {
             .opt = opt
         };
         data_threads[i] = data;
-        pthread_create(threads + i, NULL, conv_split, (void *) (data_threads + i));
+
+        if (opt.mode == 0)
+            pthread_create(threads + i, NULL, conv_row_par, (void *) (data_threads + i));
+        else
+            pthread_create(threads + i, NULL, conv_column_par, (void *) (data_threads + i));
     }
 
     for (int i = 0; i < PH_COUNT; ++i) {

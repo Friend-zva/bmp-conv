@@ -10,6 +10,7 @@ typedef struct {
 typedef struct {
     double factor, bias;
     Filter *filter;
+    char mode;
 } Options;
 
 #define MAX_VALUE (255) // 2^8 - 1
