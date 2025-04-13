@@ -16,7 +16,8 @@ int setup(void **state) {
         return -1;
     }
 
-    test_state->bmp_seq = NULL;
+    test_state->bmp_target_1 = NULL;
+    test_state->bmp_target_2 = NULL;
 
     *state = test_state;
     return 0;
@@ -27,9 +28,10 @@ int teardown(void **state) {
 
     if (test_state->bmp_source != NULL)
         bclose(test_state->bmp_source);
-
-    if (test_state->bmp_seq != NULL)
-        bclose(test_state->bmp_seq);
+    if (test_state->bmp_target_1 != NULL)
+        bclose(test_state->bmp_target_1);
+    if (test_state->bmp_target_2 != NULL)
+        bclose(test_state->bmp_target_2);
 
     free(test_state);
     return 0;
