@@ -11,8 +11,8 @@
 
 typedef struct {
     BMP *bmp_source;
-    BMP *bmp_seq;
-    BMP *bmp_par;
+    BMP *bmp_target_1;
+    BMP *bmp_target_2;
 } TestState;
 
 int setup(void **state);
