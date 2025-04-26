@@ -14,7 +14,3 @@ extern const double f_blur_lite[M_BL * M_BL];
 
 #define M_BM (5)
 extern const double f_blur_medium[M_BM * M_BM];
-
-extern double factor_def;
-
-extern double bias_def;

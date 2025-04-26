@@ -21,7 +21,3 @@ const double f_blur_medium[M_BM * M_BM] = {
     0, 1, 1, 1, 0,
     0, 0, 1, 0, 0,
 };
-
-double factor_def = 1.0;
-
-double bias_def = 0.0;
