@@ -13,4 +13,7 @@ target_link_libraries(main PRIVATE
 target_include_directories(main PRIVATE
         convolution
         options)
-target_compile_options(main PRIVATE -Wall -Wextra -pedantic -Werror)
+target_compile_options(main PRIVATE
+        -Wall -Wextra -pedantic -Werror
+#        -fsanitize=address
+        -pthread)

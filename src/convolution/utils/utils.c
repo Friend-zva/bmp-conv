@@ -67,7 +67,7 @@ void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y) {
     unsigned char r_sum = 0, g_sum = 0, b_sim = 0;
 
     unsigned int index_f = 0;
-    for (int y_f = 0; y_f < opt.filter->height; y_f++)
+    for (int y_f = 0; y_f < opt.filter->height; y_f++) {
         for (int x_f = 0; x_f < opt.filter->width; x_f++) {
             int y_loc = (y - opt.filter->height / 2 + y_f + height) % height;
             int x_loc = (x - opt.filter->width / 2 + x_f + width) % width;
@@ -80,6 +80,7 @@ void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y) {
             b_sim += (unsigned char) ((double) b * opt.filter->matrix[index_f]);
             index_f++;
         }
+    }
 
     set_pixel_rgb(bmp_conv, x, y,
                   min(max((int) (opt.factor * r_sum + opt.bias), 0), MAX_VALUE),

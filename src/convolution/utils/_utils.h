@@ -7,10 +7,15 @@ typedef struct {
     double *matrix;
 } Filter;
 
+enum Mode {
+    COLUMN,
+    ROW,
+};
+
 typedef struct {
     double factor, bias;
     Filter *filter;
-    char mode;
+    enum Mode mode;
 } Options;
 
 #define MAX_VALUE (255) // 2^8 - 1
