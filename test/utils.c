@@ -7,8 +7,9 @@
 
 int setup(void **state) {
     TestState *test_state = (TestState *) malloc(sizeof(TestState));
-    if (test_state == NULL)
+    if (test_state == NULL) {
         return -1;
+    }
 
     test_state->bmp_source = bopen(BMP_PATH);
     if (test_state->bmp_source == NULL) {
@@ -26,12 +27,13 @@ int setup(void **state) {
 int teardown(void **state) {
     TestState *test_state = (TestState *) *state;
 
-    if (test_state->bmp_source != NULL)
+    if (test_state->bmp_source != NULL) {
         bclose(test_state->bmp_source);
-    if (test_state->bmp_target_1 != NULL)
+    } if (test_state->bmp_target_1 != NULL) {
         bclose(test_state->bmp_target_1);
-    if (test_state->bmp_target_2 != NULL)
+    } if (test_state->bmp_target_2 != NULL) {
         bclose(test_state->bmp_target_2);
+    }
 
     free(test_state);
     return 0;
