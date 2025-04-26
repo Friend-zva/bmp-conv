@@ -1,4 +1,4 @@
-file(GLOB_RECURSE C_SOURCES *.c)
+file(GLOB_RECURSE C_SOURCES ./*.c)
 
 add_library(convolution ${C_SOURCES})
 target_link_libraries(convolution PUBLIC cbmp)
