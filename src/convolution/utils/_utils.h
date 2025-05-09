@@ -18,7 +18,7 @@ typedef struct {
     enum Mode mode;
 } Options;
 
-#define MAX_VALUE (255) // 2^8 - 1
+#define MAX_VALUE (255)  // 2^8 - 1
 
 int min(int a, int b);
 

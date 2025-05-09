@@ -1,12 +1,13 @@
+#include "utils.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "utils.h"
 #include "config.h"
 #include "options.h"
 
 int setup(void **state) {
-    TestState *test_state = (TestState *) malloc(sizeof(TestState));
+    TestState *test_state = (TestState *)malloc(sizeof(TestState));
     if (test_state == NULL) {
         return -1;
     }
@@ -25,13 +26,15 @@ int setup(void **state) {
 }
 
 int teardown(void **state) {
-    TestState *test_state = (TestState *) *state;
+    TestState *test_state = (TestState *)*state;
 
     if (test_state->bmp_source != NULL) {
         bclose(test_state->bmp_source);
-    } if (test_state->bmp_target_1 != NULL) {
+    }
+    if (test_state->bmp_target_1 != NULL) {
         bclose(test_state->bmp_target_1);
-    } if (test_state->bmp_target_2 != NULL) {
+    }
+    if (test_state->bmp_target_2 != NULL) {
         bclose(test_state->bmp_target_2);
     }
 

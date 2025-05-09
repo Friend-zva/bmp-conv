@@ -3,16 +3,12 @@
 
 #include "_utils.h"
 
-int min(int a, int b) {
-    return a < b ? a : b;
-}
+int min(int a, int b) { return a < b ? a : b; }
 
-int max(int a, int b) {
-    return a > b ? a : b;
-}
+int max(int a, int b) { return a > b ? a : b; }
 
 Filter *create_filter(int measure, const double matrix[measure * measure]) {
-    Filter *filter = (Filter *) malloc(sizeof(Filter));
+    Filter *filter = (Filter *)malloc(sizeof(Filter));
     if (filter == NULL) {
         fprintf(stderr, "Error allocating memory\n");
         return NULL;
@@ -20,7 +16,7 @@ Filter *create_filter(int measure, const double matrix[measure * measure]) {
 
     filter->height = measure;
     filter->width = measure;
-    filter->matrix = (double *) matrix;
+    filter->matrix = (double *)matrix;
 
     return filter;
 }
@@ -31,7 +27,7 @@ void free_options(Options *opt) {
 }
 
 BMP *b_create(BMP *b_source) {
-    BMP *b_new = (BMP *) malloc(sizeof(BMP));
+    BMP *b_new = (BMP *)malloc(sizeof(BMP));
     if (b_new == NULL) {
         fprintf(stderr, "Error allocating memory\n");
         return NULL;
@@ -43,9 +39,11 @@ BMP *b_create(BMP *b_source) {
     b_new->height = b_source->height;
     b_new->depth = b_source->depth;
 
-    b_new->file_byte_contents = (unsigned char *) malloc(b_new->file_byte_number * sizeof(unsigned char));
+    b_new->file_byte_contents = (unsigned char *)malloc(
+        b_new->file_byte_number * sizeof(unsigned char));
     if (b_new->file_byte_contents == NULL) {
         fprintf(stderr, "Error allocating memory\n");
+        free(b_new);
         return NULL;
     }
 
@@ -53,9 +51,12 @@ BMP *b_create(BMP *b_source) {
         b_new->file_byte_contents[i] = b_source->file_byte_contents[i];
     }
 
-    b_new->pixels = (pixel *) malloc(b_new->width * b_new->height * sizeof(pixel));
+    b_new->pixels =
+        (pixel *)malloc(b_new->width * b_new->height * sizeof(pixel));
     if (b_new->pixels == NULL) {
         fprintf(stderr, "Error allocating memory\n");
+        free(b_new->file_byte_contents);
+        free(b_new);
         return NULL;
     }
 
@@ -75,15 +76,15 @@ void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y) {
             unsigned char r = 0, g = 0, b = 0;
             get_pixel_rgb(bmp, x_loc, y_loc, &r, &g, &b);
 
-            r_sum += (unsigned char) ((double) r * opt.filter->matrix[index_f]);
-            g_sum += (unsigned char) ((double) g * opt.filter->matrix[index_f]);
-            b_sim += (unsigned char) ((double) b * opt.filter->matrix[index_f]);
+            r_sum += (unsigned char)((double)r * opt.filter->matrix[index_f]);
+            g_sum += (unsigned char)((double)g * opt.filter->matrix[index_f]);
+            b_sim += (unsigned char)((double)b * opt.filter->matrix[index_f]);
             index_f++;
         }
     }
 
     set_pixel_rgb(bmp_conv, x, y,
-                  min(max((int) (opt.factor * r_sum + opt.bias), 0), MAX_VALUE),
-                  min(max((int) (opt.factor * g_sum + opt.bias), 0), MAX_VALUE),
-                  min(max((int) (opt.factor * b_sim + opt.bias), 0), MAX_VALUE));
+                  min(max((int)(opt.factor * r_sum + opt.bias), 0), MAX_VALUE),
+                  min(max((int)(opt.factor * g_sum + opt.bias), 0), MAX_VALUE),
+                  min(max((int)(opt.factor * b_sim + opt.bias), 0), MAX_VALUE));
 }
