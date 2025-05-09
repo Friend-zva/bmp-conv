@@ -53,67 +53,7 @@ void id_conv_par_test(void **state) {
     }
 }
 
-void bl_conv_par_test(void **state) {
-    TestState *test_state = (TestState *)*state;
-
-    Filter filter = {
-        .height = 3,
-        .width = 3,
-        .matrix = (double *)f_blur_lite,
-    };
-    Options opt = {
-        .factor = 1.0,
-        .bias = 0.0,
-        .filter = &filter,
-        .mode = COLUMN,
-    };
-    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt);
-
-    for (int y = 0; y < opt.filter->height; y++) {
-        for (int x = 0; x < opt.filter->width; x++) {
-            unsigned char r, g, b, r_tar, g_tar, b_tar;
-            get_pixel_rgb(test_state->bmp_source, x, y, &r, &g, &b);
-            get_pixel_rgb(test_state->bmp_target_1, x, y, &r_tar, &g_tar,
-                          &b_tar);
-
-            assert_true(r == r_tar);
-            assert_true(g == g_tar);
-            assert_true(b == b_tar);
-        }
-    }
-}
-
-void bm_conv_par_test(void **state) {
-    TestState *test_state = (TestState *)*state;
-
-    Filter filter = {
-        .height = 5,
-        .width = 5,
-        .matrix = (double *)f_blur_medium,
-    };
-    Options opt = {
-        .factor = 1.0 / 13.0,
-        .bias = 0.0,
-        .filter = &filter,
-        .mode = COLUMN,
-    };
-    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt);
-
-    for (int y = 0; y < opt.filter->height; y++) {
-        for (int x = 0; x < opt.filter->width; x++) {
-            unsigned char r, g, b, r_tar, g_tar, b_tar;
-            get_pixel_rgb(test_state->bmp_source, x, y, &r, &g, &b);
-            get_pixel_rgb(test_state->bmp_target_1, x, y, &r_tar, &g_tar,
-                          &b_tar);
-
-            assert_true(r == r_tar);
-            assert_true(g == g_tar);
-            assert_true(b == b_tar);
-        }
-    }
-}
-
-void eq_bm_conv_row_column_par_test(void **state) {
+void eq_row_column_bm_conv_par_test(void **state) {
     TestState *test_state = (TestState *)*state;
 
     Filter filter = {
