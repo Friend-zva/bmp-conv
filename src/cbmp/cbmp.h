@@ -1,3 +1,5 @@
+// NOLINT
+// clang-format off
 #ifndef CBMP_CBMP_H
 #define CBMP_CBMP_H
 
@@ -52,3 +54,4 @@ void bclose(BMP* bmp);
 #endif
 
 #endif // CBMP_CBMP_H
+// NOLINTEND

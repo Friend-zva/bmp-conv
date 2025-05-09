@@ -8,7 +8,7 @@
 Options *parse_opts(char **argv) {
     int index_arg = 4;
 
-    Options *opt = (Options *) malloc(sizeof(Options));
+    Options *opt = (Options *)malloc(sizeof(Options));
     if (opt == NULL) {
         fprintf(stderr, "Error allocating memory\n");
         return NULL;
@@ -20,7 +20,7 @@ Options *parse_opts(char **argv) {
     } else if (strcmp(argv[index_arg], "column") == 0) {
         mode = COLUMN;
     } else {
-        fprintf(stderr, "Mode is one of { row, column }\n"); // blocks?
+        fprintf(stderr, "Mode is one of { row, column }\n");  // blocks?
         free(opt);
         return NULL;
     }
@@ -70,11 +70,11 @@ Options *parse_opts(char **argv) {
     return opt;
 }
 
-
 int main(int argc, char **argv) {
     if (argc != 8) {
         fprintf(stderr,
-                "Usage: %s <input file> <output file> <type=seq|par> <mode=row|column> <filter=one|id|bl|bm> <factor> <bias>\n",
+                "Usage: %s <input file> <output file> <type=seq|par> "
+                "<mode=row|column> <filter=one|id|bl|bm> <factor> <bias>\n",
                 argv[0]);
         return 1;
     }

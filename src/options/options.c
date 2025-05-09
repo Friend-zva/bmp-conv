@@ -1,6 +1,7 @@
 #include "options.h"
 
-const double f_one[M_ONE] = {1.0};
+// clang-format off
+const double f_one[M_ONE] = { 1.0 };
 
 const double f_id[M_ID * M_ID] = {
     0.0, 0.0, 0.0,
@@ -21,3 +22,4 @@ const double f_blur_medium[M_BM * M_BM] = {
     0, 1, 1, 1, 0,
     0, 0, 1, 0, 0,
 };
+// clang-format on

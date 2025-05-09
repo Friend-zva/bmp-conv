@@ -1,4 +1,7 @@
 add_library(cbmp cbmp/cbmp.c)
+set_target_properties(cbmp PROPERTIES
+    SKIP_LINTING ON
+)
 target_include_directories(cbmp PUBLIC cbmp)
 
 add_subdirectory(convolution)
@@ -15,5 +18,4 @@ target_include_directories(main PRIVATE
         options)
 target_compile_options(main PRIVATE
         -Wall -Wextra -pedantic -Werror
-#        -fsanitize=address
         -pthread)

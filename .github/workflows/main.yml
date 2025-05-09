@@ -8,30 +8,56 @@ on:
     branches: [ main ]
 
 jobs:
-#  linter:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Static analyze
-#        run: ?
-
-  run:
-    name: Build and test
+  linter:
+    name: Linter
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Clone project
+        uses: actions/checkout@v3
+
+      - name: Install requirements
+        run: |
+          sudo apt update
+          sudo apt install -y clang-tidy
+
+      - name: Run clang-tidy
+        run: ./scripts/linter.sh
+  
+  formatter:
+    name: Formatter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v3
+
+      - name: Install requirements
+        run: |
+          sudo apt update
+          sudo apt install clang-format
+
+      - name: Run clang-format
+        run: ./scripts/formatter.sh
+
+  run:
+    name: Build and test
+    needs: linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v3
 
       - name: Install requirements
         run: |
             sudo apt update
             sudo apt-get install -y libcmocka-dev
+            sudo apt install valgrind
 
-      - name: Build source code
+      - name: Build
         run: ./scripts/build.sh
 
-      - name: Test source code
+      - name: Test
         run: ./scripts/test.sh
         continue-on-error: true
