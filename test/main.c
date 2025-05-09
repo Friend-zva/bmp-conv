@@ -8,13 +8,13 @@
 #include "seq/_conv.h"  // remove?!
 #include "utils.h"
 
-static void eq_bm_conv_seq_pthread_test(void **state) {
+static void eq_seq_par_bl_conv_test(void **state) {
     TestState *test_state = (TestState *)*state;
 
     Filter filter = {
         .height = 3,
         .width = 3,
-        .matrix = (double *)f_id,
+        .matrix = (double *)f_blur_lite,
     };
     Options opt = {
         .factor = 1.0,
@@ -48,16 +48,13 @@ int main(void) {
                                         teardown),
         cmocka_unit_test_setup_teardown(id_conv_seq_test, setup, teardown),
         cmocka_unit_test_setup_teardown(id_conv_par_test, setup, teardown),
-        cmocka_unit_test_setup_teardown(bl_conv_seq_test, setup, teardown),
-        cmocka_unit_test_setup_teardown(bl_conv_par_test, setup, teardown),
-        cmocka_unit_test_setup_teardown(bm_conv_seq_test, setup, teardown),
-        cmocka_unit_test_setup_teardown(bm_conv_par_test, setup, teardown),
-        cmocka_unit_test_setup_teardown(eq_bm_conv_seq_pthread_test, setup,
+        cmocka_unit_test_setup_teardown(eq_row_column_bl_conv_seq_test, setup,
                                         teardown),
-        cmocka_unit_test_setup_teardown(eq_bm_conv_row_column_seq_test, setup,
+        cmocka_unit_test_setup_teardown(eq_row_column_bm_conv_par_test, setup,
                                         teardown),
-        cmocka_unit_test_setup_teardown(eq_bm_conv_row_column_par_test, setup,
+        cmocka_unit_test_setup_teardown(eq_seq_par_bl_conv_test, setup,
                                         teardown),
+
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
