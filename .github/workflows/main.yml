@@ -59,7 +59,9 @@ jobs:
             sudo apt install valgrind
 
       - name: Build
-        run: ./scripts/build.sh
+        run: |
+          ./scripts/build.sh
+          valgrind --leak-check=full "build/src/main"
 
       - name: Test
         run: ./scripts/test.sh
