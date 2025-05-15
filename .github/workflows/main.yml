@@ -8,22 +8,6 @@ on:
     branches: [ main ]
 
 jobs:
-  linter:
-    name: Linter
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Clone project
-        uses: actions/checkout@v3
-
-      - name: Install requirements
-        run: |
-          sudo apt update
-          sudo apt install -y clang-tidy
-
-      - name: Run clang-tidy
-        run: ./scripts/linter.sh
-  
   formatter:
     name: Formatter
     runs-on: ubuntu-latest
@@ -40,8 +24,27 @@ jobs:
       - name: Run clang-format
         run: ./scripts/formatter.sh
 
+  linter:
+    name: Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v3
+
+      - name: Install requirements
+        run: |
+          sudo apt update
+          sudo apt install -y clang-tidy
+
+      - name: Build
+        run: ./scripts/build.sh
+
+      - name: Run clang-tidy
+        run: ./scripts/linter.sh
+
   run:
-    name: Build and test
+    name: Test
     needs: linter
     runs-on: ubuntu-latest
 
@@ -60,4 +63,3 @@ jobs:
 
       - name: Test
         run: ./scripts/test.sh
-        continue-on-error: true
