@@ -19,8 +19,10 @@ Options *parse_opts(char **argv) {
         mode = ROW;
     } else if (strcmp(argv[index_arg], "column") == 0) {
         mode = COLUMN;
+    } else if (strcmp(argv[index_arg], "pixel") == 0) {
+        mode = PIXEL;
     } else {
-        fprintf(stderr, "Mode is one of { row, column }\n");  // blocks?
+        fprintf(stderr, "Mode is one of { row, column, pixel }\n");
         free(opt);
         return NULL;
     }
