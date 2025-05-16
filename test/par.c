@@ -65,7 +65,7 @@ void eq_row_column_bm_conv_par_test(void **state) {
         .factor = 1.0 / 13.0,
         .bias = 0.0,
         .filter = &filter,
-        .mode = COLUMN,
+        .mode = ROW,
     };
     test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt_1);
 
@@ -73,7 +73,46 @@ void eq_row_column_bm_conv_par_test(void **state) {
         .factor = 1.0 / 13.0,
         .bias = 0.0,
         .filter = &filter,
+        .mode = COLUMN,
+    };
+    test_state->bmp_target_2 = conv_par(test_state->bmp_source, opt_2);
+
+    for (int y = 0; y < opt_1.filter->height; y++) {
+        for (int x = 0; x < opt_1.filter->width; x++) {
+            unsigned char r_tar_1, g_tar_1, b_tar_1, r_tar_2, g_tar_2, b_tar_2;
+            get_pixel_rgb(test_state->bmp_target_1, x, y, &r_tar_1, &g_tar_1,
+                          &b_tar_1);
+            get_pixel_rgb(test_state->bmp_target_2, x, y, &r_tar_2, &g_tar_2,
+                          &b_tar_2);
+
+            assert_true(r_tar_1 == r_tar_2);
+            assert_true(g_tar_1 == g_tar_2);
+            assert_true(b_tar_1 == b_tar_2);
+        }
+    }
+}
+
+void eq_row_pixel_bm_conv_par_test(void **state) {
+    TestState *test_state = (TestState *)*state;
+
+    Filter filter = {
+        .height = 5,
+        .width = 5,
+        .matrix = (double *)f_blur_medium,
+    };
+    Options opt_1 = {
+        .factor = 1.0 / 13.0,
+        .bias = 0.0,
+        .filter = &filter,
         .mode = ROW,
+    };
+    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt_1);
+
+    Options opt_2 = {
+        .factor = 1.0 / 13.0,
+        .bias = 0.0,
+        .filter = &filter,
+        .mode = PIXEL,
     };
     test_state->bmp_target_2 = conv_par(test_state->bmp_source, opt_2);
 

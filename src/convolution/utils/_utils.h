@@ -8,8 +8,9 @@ typedef struct {
 } Filter;
 
 enum Mode {
-    COLUMN,
     ROW,
+    COLUMN,
+    PIXEL,
 };
 
 typedef struct {
