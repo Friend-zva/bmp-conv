@@ -1,4 +1,4 @@
-// NOLINT
+// NOLINTBEGIN
 // clang-format off
 #ifndef CBMP_CBMP_H
 #define CBMP_CBMP_H
