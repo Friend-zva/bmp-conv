@@ -54,8 +54,12 @@ int main(void) {
         cmocka_unit_test_setup_teardown(non_null_conv_par_test, setup,
                                         teardown),
         cmocka_unit_test_setup_teardown(id_conv_par_test, setup, teardown),
-        cmocka_unit_test_setup_teardown(eq_row_column_bl_conv_par_test, setup, teardown),
-        cmocka_unit_test_setup_teardown(eq_row_pixel_bm_conv_par_test, setup, teardown),
+        cmocka_unit_test_setup_teardown(eq_row_column_bl_conv_par_test, setup,
+                                        teardown),
+        cmocka_unit_test_setup_teardown(eq_row_pixel_bm_conv_par_test, setup,
+                                        teardown),
+        cmocka_unit_test_setup_teardown(eq_seq_par_bl_conv_test, setup,
+                                        teardown),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

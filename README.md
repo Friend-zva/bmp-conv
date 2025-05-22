@@ -1,7 +1,7 @@
 # bmp-conv
 
 **bmp-conv** — library for bmp convolution.
-*Convolution* — operation where you take the sum of products of elements from two 2D functions, 
+*Convolution* — operation where you take the sum of products of elements from two 2D functions,
 where you let one of the two functions move over every element of the other function.
 
 # Build
@@ -21,11 +21,12 @@ where you let one of the two functions move over every element of the other func
 ```shell
 ./scripts/test.sh
 ```
+
 > Required installed cmocka library.
 
 ## Thanks
 
-Thanks [Mattflow](https://github.com/mattflow/cbmp?ysclid=m9104rn4ej835090391) for 
+Thanks [Mattflow](https://github.com/mattflow/cbmp?ysclid=m9104rn4ej835090391) for
 C library for reading, manipulating, and saving BMP images.
 
 ## License
