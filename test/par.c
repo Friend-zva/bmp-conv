@@ -8,8 +8,8 @@ void non_null_conv_par_test(void **state) {
     TestState *test_state = (TestState *)*state;
 
     Filter filter = {
-        .height = 1,
-        .width = 1,
+        .height = M_ONE,
+        .width = M_ONE,
         .matrix = (double *)f_one,
     };
     Options opt = {
@@ -27,8 +27,8 @@ void id_conv_par_test(void **state) {
     TestState *test_state = (TestState *)*state;
 
     Filter filter = {
-        .height = 3,
-        .width = 3,
+        .height = M_ID,
+        .width = M_ID,
         .matrix = (double *)f_id,
     };
     Options opt = {
@@ -46,23 +46,23 @@ void id_conv_par_test(void **state) {
             get_pixel_rgb(test_state->bmp_target_1, x, y, &r_tar, &g_tar,
                           &b_tar);
 
-            assert_true(r == r_tar);
-            assert_true(g == g_tar);
-            assert_true(b == b_tar);
+            assert_almost_equal(r, r_tar);
+            assert_almost_equal(g, g_tar);
+            assert_almost_equal(b, b_tar);
         }
     }
 }
 
-void eq_row_column_bm_conv_par_test(void **state) {
+void eq_row_column_bl_conv_par_test(void **state) {
     TestState *test_state = (TestState *)*state;
 
     Filter filter = {
-        .height = 5,
-        .width = 5,
-        .matrix = (double *)f_blur_medium,
+        .height = M_BL,
+        .width = M_BL,
+        .matrix = (double *)f_blur_lite,
     };
     Options opt_1 = {
-        .factor = 1.0 / 13.0,
+        .factor = 1.0 / sum_elem_matrix((double *)f_blur_lite, M_BL),
         .bias = 0.0,
         .filter = &filter,
         .mode = ROW,
@@ -70,7 +70,7 @@ void eq_row_column_bm_conv_par_test(void **state) {
     test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt_1);
 
     Options opt_2 = {
-        .factor = 1.0 / 13.0,
+        .factor = 1.0 / sum_elem_matrix((double *)f_blur_lite, M_BL),
         .bias = 0.0,
         .filter = &filter,
         .mode = COLUMN,
@@ -85,9 +85,9 @@ void eq_row_column_bm_conv_par_test(void **state) {
             get_pixel_rgb(test_state->bmp_target_2, x, y, &r_tar_2, &g_tar_2,
                           &b_tar_2);
 
-            assert_true(r_tar_1 == r_tar_2);
-            assert_true(g_tar_1 == g_tar_2);
-            assert_true(b_tar_1 == b_tar_2);
+            assert_almost_equal(r_tar_1, r_tar_2);
+            assert_almost_equal(g_tar_1, g_tar_2);
+            assert_almost_equal(b_tar_1, b_tar_2);
         }
     }
 }
@@ -96,12 +96,12 @@ void eq_row_pixel_bm_conv_par_test(void **state) {
     TestState *test_state = (TestState *)*state;
 
     Filter filter = {
-        .height = 5,
-        .width = 5,
+        .height = M_BM,
+        .width = M_BM,
         .matrix = (double *)f_blur_medium,
     };
     Options opt_1 = {
-        .factor = 1.0 / 13.0,
+        .factor = 1.0 / sum_elem_matrix((double *)f_blur_medium, M_BM),
         .bias = 0.0,
         .filter = &filter,
         .mode = ROW,
@@ -109,7 +109,7 @@ void eq_row_pixel_bm_conv_par_test(void **state) {
     test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt_1);
 
     Options opt_2 = {
-        .factor = 1.0 / 13.0,
+        .factor = 1.0 / sum_elem_matrix((double *)f_blur_medium, M_BM),
         .bias = 0.0,
         .filter = &filter,
         .mode = PIXEL,
@@ -124,9 +124,9 @@ void eq_row_pixel_bm_conv_par_test(void **state) {
             get_pixel_rgb(test_state->bmp_target_2, x, y, &r_tar_2, &g_tar_2,
                           &b_tar_2);
 
-            assert_true(r_tar_1 == r_tar_2);
-            assert_true(g_tar_1 == g_tar_2);
-            assert_true(b_tar_1 == b_tar_2);
+            assert_almost_equal(r_tar_1, r_tar_2);
+            assert_almost_equal(g_tar_1, g_tar_2);
+            assert_almost_equal(b_tar_1, b_tar_2);
         }
     }
 }

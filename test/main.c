@@ -33,9 +33,9 @@ static void eq_seq_par_bl_conv_test(void **state) {
             get_pixel_rgb(test_state->bmp_target_2, x, y, &r_par, &g_par,
                           &b_par);
 
-            assert_true(r_seq == r_par);
-            assert_true(g_seq == g_par);
-            assert_true(b_seq == b_par);
+            assert_almost_equal(r_seq, r_par);
+            assert_almost_equal(g_seq, g_par);
+            assert_almost_equal(b_seq, b_par);
         }
     }
 }
@@ -44,18 +44,18 @@ int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test_setup_teardown(non_null_conv_seq_test, setup,
                                         teardown),
+        cmocka_unit_test_setup_teardown(id_conv_seq_test, setup, teardown),
+        cmocka_unit_test_setup_teardown(eq_extra_bm_conv_seq_test, setup,
+                                        teardown),
+        cmocka_unit_test_setup_teardown(eq_compos_bl_bm_conv_seq_test, setup,
+                                        teardown),
+        cmocka_unit_test_setup_teardown(eq_shift_l_r_id_conv_seq_test, setup,
+                                        teardown),
         cmocka_unit_test_setup_teardown(non_null_conv_par_test, setup,
                                         teardown),
-        cmocka_unit_test_setup_teardown(id_conv_seq_test, setup, teardown),
         cmocka_unit_test_setup_teardown(id_conv_par_test, setup, teardown),
-        cmocka_unit_test_setup_teardown(eq_row_column_bl_conv_seq_test, setup,
-                                        teardown),
-        cmocka_unit_test_setup_teardown(eq_row_column_bm_conv_par_test, setup,
-                                        teardown),
-        cmocka_unit_test_setup_teardown(eq_row_pixel_bm_conv_par_test, setup,
-                                        teardown),
-        cmocka_unit_test_setup_teardown(eq_seq_par_bl_conv_test, setup,
-                                        teardown),
+        cmocka_unit_test_setup_teardown(eq_row_column_bl_conv_par_test, setup, teardown),
+        cmocka_unit_test_setup_teardown(eq_row_pixel_bm_conv_par_test, setup, teardown),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

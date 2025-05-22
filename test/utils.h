@@ -17,3 +17,5 @@ typedef struct {
 int setup(void **state);
 
 int teardown(void **state);
+
+void assert_almost_equal(char a, char b);
