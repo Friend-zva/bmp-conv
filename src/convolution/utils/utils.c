@@ -65,7 +65,7 @@ BMP *b_create(BMP *b_source) {
 
 void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y) {
     const int width = get_width(bmp), height = get_height(bmp);
-    unsigned char r_sum = 0, g_sum = 0, b_sim = 0;
+    double r_sum = 0.0, g_sum = 0.0, b_sum = 0.0;
 
     unsigned int index_f = 0;
     for (int y_f = 0; y_f < opt.filter->height; y_f++) {
@@ -76,15 +76,18 @@ void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y) {
             unsigned char r = 0, g = 0, b = 0;
             get_pixel_rgb(bmp, x_loc, y_loc, &r, &g, &b);
 
-            r_sum += (unsigned char)((double)r * opt.filter->matrix[index_f]);
-            g_sum += (unsigned char)((double)g * opt.filter->matrix[index_f]);
-            b_sim += (unsigned char)((double)b * opt.filter->matrix[index_f]);
+            r_sum += (double)r * opt.filter->matrix[index_f];
+            g_sum += (double)g * opt.filter->matrix[index_f];
+            b_sum += (double)b * opt.filter->matrix[index_f];
             index_f++;
         }
     }
 
     set_pixel_rgb(bmp_conv, x, y,
-                  min(max((int)(opt.factor * r_sum + opt.bias), 0), MAX_VALUE),
-                  min(max((int)(opt.factor * g_sum + opt.bias), 0), MAX_VALUE),
-                  min(max((int)(opt.factor * b_sim + opt.bias), 0), MAX_VALUE));
+                  (unsigned char)min(
+                      max((int)(opt.factor * r_sum + opt.bias), 0), MAX_VALUE),
+                  (unsigned char)min(
+                      max((int)(opt.factor * g_sum + opt.bias), 0), MAX_VALUE),
+                  (unsigned char)min(
+                      max((int)(opt.factor * b_sum + opt.bias), 0), MAX_VALUE));
 }
