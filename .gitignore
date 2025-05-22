@@ -3,5 +3,6 @@
 .DS_Store
 cmake-build-debug
 build
+.venv
 bmps/result
 test/config.h
