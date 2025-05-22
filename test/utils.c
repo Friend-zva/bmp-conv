@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 #include "config.h"
-#include "options.h"
 
 int setup(void **state) {
     TestState *test_state = (TestState *)malloc(sizeof(TestState));
@@ -40,4 +39,8 @@ int teardown(void **state) {
 
     free(test_state);
     return 0;
+}
+
+void assert_almost_equal(char a, char b) {
+    assert_true(abs((int)a - (int)b) <= 1);
 }
