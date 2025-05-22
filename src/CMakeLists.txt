@@ -1,7 +1,4 @@
 add_library(cbmp cbmp/cbmp.c)
-set_target_properties(cbmp PROPERTIES
-    SKIP_LINTING ON
-)
 target_include_directories(cbmp PUBLIC cbmp)
 
 add_subdirectory(convolution)
