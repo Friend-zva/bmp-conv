@@ -52,7 +52,7 @@ Options *parse_opts(char **argv) {
 
     double factor;
     if (strcmp(argv[index_arg], "def") == 0) {
-        factor = FACTOR_DEFAULT(opt->filter, opt->filter->height);
+        factor = FACTOR_DEFAULT(opt->filter->matrix, opt->filter->height);
     } else {
         char *error;
         factor = strtod(argv[index_arg], &error);
