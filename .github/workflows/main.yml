@@ -60,9 +60,10 @@ jobs:
             sudo apt install valgrind
 
       - name: Build
-        run: |
-          ./scripts/build.sh
-          valgrind --leak-check=full "build/src/main"
+        run: ./scripts/build.sh
 
       - name: Test
         run: ./scripts/test.sh
+
+      - name: Valgrind
+        run: valgrind --leak-check=full "./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp par row bl 1 0"
