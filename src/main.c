@@ -50,22 +50,32 @@ Options *parse_opts(char **argv) {
     opt->filter = filter;
     index_arg++;
 
-    char *error;
-    double factor = strtod(argv[index_arg], &error);
-    if (argv[index_arg] == error || *error != '\0') {
-        fprintf(stderr, "Factor: '%s' is not number\n", argv[index_arg]);
-        free_options(opt);
-        return NULL;
+    double factor;
+    if (strcmp(argv[index_arg], "def") == 0) {
+        factor = FACTOR_DEFAULT(opt->filter, opt->filter->height);
+    } else {
+        char *error;
+        factor = strtod(argv[index_arg], &error);
+        if (argv[index_arg] == error || *error != '\0') {
+            fprintf(stderr, "Factor: '%s' is not number\n", argv[index_arg]);
+            free_options(opt);
+            return NULL;
+        }
     }
     opt->factor = factor;
     index_arg++;
 
-    error = NULL;
-    double bias = strtod(argv[index_arg], &error);
-    if (argv[index_arg] == error || *error != '\0') {
-        fprintf(stderr, "Bias: '%s' is not number\n", argv[index_arg]);
-        free_options(opt);
-        return NULL;
+    double bias;
+    if (strcmp(argv[index_arg], "def") == 0) {
+        bias = 0.0;
+    } else {
+        char *error;
+        bias = strtod(argv[index_arg], &error);
+        if (argv[index_arg] == error || *error != '\0') {
+            fprintf(stderr, "Bias: '%s' is not number\n", argv[index_arg]);
+            free_options(opt);
+            return NULL;
+        }
     }
     opt->bias = bias;
 
@@ -74,10 +84,15 @@ Options *parse_opts(char **argv) {
 
 int main(int argc, char **argv) {
     if (argc != 8) {
-        fprintf(stderr,
-                "Usage: %s <input file> <output file> <type=seq|par> "
-                "<mode=row|column> <filter=one|id|bl|bm> <factor> <bias>\n",
-                argv[0]);
+        fprintf(
+            stderr,
+            "Usage: %s <input file> <output file> <type=[seq|par]> [options]\n"
+            "Options (in specified order):\n"
+            "  <mode=[row|column|pixel]>\n"
+            "  <filter=[one|id|bl|bm>]\n"
+            "  <factor=[def|<number>]>\n"
+            "  <bias=[def|<number>]>\n",
+            argv[0]);
         return 1;
     }
 

@@ -26,9 +26,9 @@ BMP *conv_seq(BMP *bmp, Options opt) {
         return NULL;
     }
 
-    if (opt.mode == ROW) {
+    if (opt.mode == ROW || opt.mode == PIXEL) {
         conv_row_seq(bmp, bmp_conv, opt);
-    } else {
+    } else if (opt.mode == COLUMN) {
         conv_column_seq(bmp, bmp_conv, opt);
     }
 
