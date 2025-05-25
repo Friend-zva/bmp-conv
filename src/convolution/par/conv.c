@@ -5,10 +5,9 @@
 
 #include "_conv.h"
 
-#define PTH_COUNT 8
-
+sig_atomic_t count_pth = 0;
 sig_atomic_t count_pixels_for_pth = 0;
-sig_atomic_t inaccuracy = 0;  // less than [PTH_COUNT]
+sig_atomic_t inaccuracy = 0;  // less than [count_pth]
 
 typedef struct {
     int id;
@@ -77,7 +76,7 @@ void conv_pixel_par(void *_data) {
     const int width = get_width(bmp_source), height = get_height(bmp_source);
 
     int count = count_pixels_for_pth + ((inaccuracy > id) ? 1 : 0);
-    for (int index = id; index < width * height; index += PTH_COUNT) {
+    for (int index = id; index < width * height; index += count_pth) {
         int y = index / width;
         int x = index % width;
 
@@ -91,53 +90,49 @@ void conv_pixel_par(void *_data) {
     }
 }
 
-BMP *conv_par(BMP *bmp_source, Options opt) {
+BMP *conv_par(BMP *bmp_source, Options opt, enum Mode mode, int count_threads) {
     BMP *bmp_conv = b_create(bmp_source);
     if (bmp_conv == NULL) {
         return NULL;
     }
 
-    pthread_t threads[PTH_COUNT];
-    data_thread data_threads[PTH_COUNT];
+    pthread_t threads[count_threads];
+    data_thread data_threads[count_threads];
 
     const unsigned int count_pixels =
         get_width(bmp_source) * get_height(bmp_source);
-    count_pixels_for_pth = (int)(count_pixels / (unsigned int)PTH_COUNT);
-    inaccuracy =
-        (int)(count_pixels - (unsigned int)(count_pixels_for_pth * PTH_COUNT));
+    count_pth = count_threads;
+    count_pixels_for_pth = (int)(count_pixels / (unsigned int)count_threads);
+    inaccuracy = (int)(count_pixels -
+                       (unsigned int)(count_pixels_for_pth * count_threads));
 
-    for (int i = 0; i < PTH_COUNT; ++i) {
+    for (int i = 0; i < count_threads; ++i) {
         data_thread data = {.id = i,
                             .bmp_source = bmp_source,
                             .bmp_conv = bmp_conv,
                             .opt = opt};
         data_threads[i] = data;
 
-        if (opt.mode == ROW) {
-            if (pthread_create(threads + i, NULL, (void *)conv_row_par,
-                               (void *)(data_threads + i))) {
-                fprintf(stderr, "Error creating pthread\n");
-                free(bmp_conv);
-                return NULL;
-            }
-        } else if (opt.mode == COLUMN) {
-            if (pthread_create(threads + i, NULL, (void *)conv_column_par,
-                               (void *)(data_threads + i))) {
-                fprintf(stderr, "Error creating pthread\n");
-                free(bmp_conv);
-                return NULL;
-            }
-        } else if (opt.mode == PIXEL) {
-            if (pthread_create(threads + i, NULL, (void *)conv_pixel_par,
-                               (void *)(data_threads + i))) {
-                fprintf(stderr, "Error creating pthread\n");
-                free(bmp_conv);
-                return NULL;
-            }
+        void *(*func_conv)(void *) = NULL;
+        switch (mode) {
+            case ROW:
+                func_conv = (void *)conv_row_par;
+                break;
+            case COLUMN:
+                func_conv = (void *)conv_column_par;
+                break;
+            case PIXEL:
+                func_conv = (void *)conv_pixel_par;
+        }
+        if (pthread_create(threads + i, NULL, func_conv,
+                           (void *)(data_threads + i))) {
+            fprintf(stderr, "Error creating pthread\n");
+            free(bmp_conv);
+            return NULL;
         }
     }
 
-    for (int i = 0; i < PTH_COUNT; ++i) {
+    for (int i = 0; i < count_threads; ++i) {
         if (pthread_join(*(threads + i), NULL)) {
             fprintf(stderr, "Error joining pthreads\n");
             free(bmp_conv);

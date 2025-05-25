@@ -13,7 +13,8 @@ where you let one of the two functions move over every element of the other func
 # Usage
 
 ```shell
-./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp seq row id 1 0
+./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp id 1 0 seq
+./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp id 1 0 par row 8
 ```
 
 # Test

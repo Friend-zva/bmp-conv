@@ -16,7 +16,6 @@ void non_null_conv_seq_test(void **state) {
         .factor = FACTOR_DEFAULT(f_one, M_ONE),
         .bias = 0.0,
         .filter = &filter,
-        .mode = ROW,
     };
     test_state->bmp_target_1 = conv_seq(test_state->bmp_source, opt);
 
@@ -35,7 +34,6 @@ void id_conv_seq_test(void **state) {
         .factor = FACTOR_DEFAULT(f_id, M_ID),
         .bias = 0.0,
         .filter = &filter,
-        .mode = ROW,
     };
     test_state->bmp_target_1 = conv_seq(test_state->bmp_source, opt);
 
@@ -65,7 +63,6 @@ void eq_extra_bm_conv_seq_test(void **state) {
         .factor = FACTOR_DEFAULT(f_blur_medium, M_BM),
         .bias = 0.0,
         .filter = &filter_1,
-        .mode = ROW,
     };
     test_state->bmp_target_1 = conv_seq(test_state->bmp_source, opt_1);
 
@@ -78,7 +75,6 @@ void eq_extra_bm_conv_seq_test(void **state) {
         .factor = FACTOR_DEFAULT(f_extra_blur_medium, 2 + M_BM),
         .bias = 0.0,
         .filter = &filter_2,
-        .mode = ROW,
     };
     test_state->bmp_target_2 = conv_seq(test_state->bmp_source, opt_2);
 
@@ -109,7 +105,6 @@ void eq_compos_bl_bm_conv_seq_test(void **state) {
         .factor = FACTOR_DEFAULT(f_blur_lite, M_BL),
         .bias = 0.0,
         .filter = &filter_1,
-        .mode = ROW,
     };
 
     Filter filter_2 = {
@@ -121,7 +116,6 @@ void eq_compos_bl_bm_conv_seq_test(void **state) {
         .factor = FACTOR_DEFAULT(f_blur_medium, M_BM),
         .bias = 0.0,
         .filter = &filter_2,
-        .mode = ROW,
     };
 
     test_state->bmp_target_1 = conv_seq(test_state->bmp_source, opt_1);
@@ -157,7 +151,6 @@ void eq_shift_l_r_id_conv_seq_test(void **state) {
         .factor = FACTOR_DEFAULT(f_id_shift_l, M_ID),
         .bias = 0.0,
         .filter = &filter_1,
-        .mode = ROW,
     };
 
     Filter filter_2 = {
@@ -169,7 +162,6 @@ void eq_shift_l_r_id_conv_seq_test(void **state) {
         .factor = FACTOR_DEFAULT(f_id_shift_r, M_ID),
         .bias = 0.0,
         .filter = &filter_2,
-        .mode = ROW,
     };
 
     test_state->bmp_target_1 = conv_seq(test_state->bmp_source, opt_1);

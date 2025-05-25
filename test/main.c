@@ -20,10 +20,9 @@ static void eq_seq_par_bl_conv_test(void **state) {
         .factor = 1.0,
         .bias = 0.0,
         .filter = &filter,
-        .mode = ROW,
     };
     test_state->bmp_target_1 = conv_seq(test_state->bmp_source, opt);
-    test_state->bmp_target_2 = conv_par(test_state->bmp_source, opt);
+    test_state->bmp_target_2 = conv_par(test_state->bmp_source, opt, ROW, 8);
 
     for (int y = 0; y < opt.filter->height; y++) {
         for (int x = 0; x < opt.filter->width; x++) {
