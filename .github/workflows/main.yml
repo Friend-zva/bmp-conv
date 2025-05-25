@@ -66,4 +66,4 @@ jobs:
         run: ./scripts/test.sh
 
       - name: Valgrind
-        run: valgrind --leak-check=full ./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp par row bl def def
+        run: valgrind --leak-check=full --show-leak-kinds=all ./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp id 1 0 par row 8

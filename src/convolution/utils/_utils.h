@@ -16,7 +16,6 @@ enum Mode {
 typedef struct {
     double factor, bias;
     Filter *filter;
-    enum Mode mode;
 } Options;
 
 #define MAX_VALUE (255)  // 2^8 - 1

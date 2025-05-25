@@ -1,4 +1,4 @@
-!/bin/sh -e
+#!/bin/sh -e
 
 BASEDIR=$(realpath "$(dirname "$0")")
 ROOTDIR=$(realpath "$BASEDIR/..")

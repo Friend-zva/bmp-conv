@@ -16,9 +16,8 @@ void non_null_conv_par_test(void **state) {
         .factor = 1.0,
         .bias = 0.0,
         .filter = &filter,
-        .mode = COLUMN,
     };
-    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt);
+    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt, COLUMN, 8);
 
     assert_non_null(test_state->bmp_target_1);
 }
@@ -35,9 +34,8 @@ void id_conv_par_test(void **state) {
         .factor = 1.0,
         .bias = 0.0,
         .filter = &filter,
-        .mode = COLUMN,
     };
-    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt);
+    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt, COLUMN, 8);
 
     for (int y = 0; y < opt.filter->height; y++) {
         for (int x = 0; x < opt.filter->width; x++) {
@@ -65,17 +63,16 @@ void eq_row_column_bl_conv_par_test(void **state) {
         .factor = 1.0 / sum_elem_matrix((double *)f_blur_lite, M_BL),
         .bias = 0.0,
         .filter = &filter,
-        .mode = ROW,
     };
-    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt_1);
+    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt_1, ROW, 8);
 
     Options opt_2 = {
         .factor = 1.0 / sum_elem_matrix((double *)f_blur_lite, M_BL),
         .bias = 0.0,
         .filter = &filter,
-        .mode = COLUMN,
     };
-    test_state->bmp_target_2 = conv_par(test_state->bmp_source, opt_2);
+    test_state->bmp_target_2 =
+        conv_par(test_state->bmp_source, opt_2, COLUMN, 8);
 
     for (int y = 0; y < opt_1.filter->height; y++) {
         for (int x = 0; x < opt_1.filter->width; x++) {
@@ -104,17 +101,16 @@ void eq_row_pixel_bm_conv_par_test(void **state) {
         .factor = 1.0 / sum_elem_matrix((double *)f_blur_medium, M_BM),
         .bias = 0.0,
         .filter = &filter,
-        .mode = ROW,
     };
-    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt_1);
+    test_state->bmp_target_1 = conv_par(test_state->bmp_source, opt_1, ROW, 8);
 
     Options opt_2 = {
         .factor = 1.0 / sum_elem_matrix((double *)f_blur_medium, M_BM),
         .bias = 0.0,
         .filter = &filter,
-        .mode = PIXEL,
     };
-    test_state->bmp_target_2 = conv_par(test_state->bmp_source, opt_2);
+    test_state->bmp_target_2 =
+        conv_par(test_state->bmp_source, opt_2, PIXEL, 8);
 
     for (int y = 0; y < opt_1.filter->height; y++) {
         for (int x = 0; x < opt_1.filter->width; x++) {
