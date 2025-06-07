@@ -1,3 +1,4 @@
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,13 +7,12 @@
 #include "options.h"
 
 Options *parse_opts(char **argv) {
-    int index_arg = 3;
-
     Options *opt = (Options *)malloc(sizeof(Options));
     if (opt == NULL) {
         fprintf(stderr, "Error allocating memory\n");
         return NULL;
     }
+    int index_arg = 3;
 
     Filter *filter = NULL;
     if (strcmp(argv[index_arg], "one") == 0) {
@@ -68,86 +68,126 @@ Options *parse_opts(char **argv) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 7 || argc > 9) {
+    if (argc < 7 || argc > 10) {
         fprintf(stderr,
-                "Usage: %s <input file> <output file> [options] [mode]\n"
+                "Usage: %s [files] [options] [mode]\n"
+                "\nFiles (in specified order):\n"
+                "  <input  file> for 'seq' and 'par' types;"
+                " <input  directory> for 'queue' type\n"
+                "  <output file> for 'seq' and 'par' types;"
+                " <output directory> for 'queue' type\n"
                 "\nOptions (in specified order):\n"
-                "  <filter=[one|id|bl|bm>]\n"
+                "  <filter=[one|id|bl|bm>]>\n"
                 "  <factor=[def|<double>]>\n"
-                "  <bias=[def|<double>]>\n"
+                "  <bias  =[def|<double>]>\n"
                 "\nMode (in specified order):\n"
                 "  <type=[seq|par]>\n"
                 "  <mode=[row|column|pixel]> only for 'par' type\n"
-                "  <thread count=<int>> only for 'par' type\n",
+                "  <thread count=<int>>      only for 'par' type\n",
                 argv[0]);
-        return 1;
-    }
-
-    BMP *bmp = bopen(argv[1]);
-    if (bmp == NULL) {
-        fprintf(stderr, "Error opening input file\n");
         return 1;
     }
 
     Options *opt = parse_opts(argv);
     if (opt == NULL) {
-        bclose(bmp);
         return 1;
     }
 
-    BMP *bmp_conv = NULL;
-    if (strcmp(argv[6], "seq") == 0) {
-        bmp_conv = conv_seq(bmp, *opt);
-    } else if (strcmp(argv[6], "par") == 0) {
+    int index_arg = 6;
+    if (strcmp(argv[index_arg], "seq") == 0) {
+        BMP *bmp = bopen(argv[1]);
+        if (bmp == NULL) {
+            fprintf(stderr, "Error opening input file\n");
+            free_options(opt);
+            return 1;
+        }
+
+        BMP *bmp_conv = conv_seq(bmp, *opt);
+        if (bmp_conv == NULL) {
+            free_options(opt);
+            return 1;
+        }
+        bwrite(bmp_conv, argv[2]);
+
+        bclose(bmp);
+        bclose(bmp_conv);
+    } else if (strcmp(argv[index_arg], "par") == 0) {
         enum Mode mode;
         if (argc != 9) {
             fprintf(
                 stderr,
                 "Mode and thread count are needed for parallel convolution\n");
-            bclose(bmp);
             free_options(opt);
             return 1;
         }
+        index_arg++;
 
-        if (strcmp(argv[7], "row") == 0) {
+        if (strcmp(argv[index_arg], "row") == 0) {
             mode = ROW;
-        } else if (strcmp(argv[7], "column") == 0) {
+        } else if (strcmp(argv[index_arg], "column") == 0) {
             mode = COLUMN;
-        } else if (strcmp(argv[7], "pixel") == 0) {
+        } else if (strcmp(argv[index_arg], "pixel") == 0) {
             mode = PIXEL;
         } else {
             fprintf(stderr, "Mode is one of [row, column, pixel]\n");
-            bclose(bmp);
             free_options(opt);
             return 1;
         }
+        index_arg++;
 
         int count_th = 0;
-        sscanf(argv[8], "%d", &count_th);
+        sscanf(argv[index_arg], "%d", &count_th);
         if (count_th <= 0) {
             fprintf(stderr, "Thread count is natural number\n");
-            bclose(bmp);
             free_options(opt);
             return 1;
         }
 
-        bmp_conv = conv_par(bmp, *opt, mode, count_th);
-    } else {
-        fprintf(stderr, "Type is one of [seq, par]\n");
-        bclose(bmp);
-        free_options(opt);
-        return 1;
-    }
-    if (bmp_conv == NULL) {
-        bclose(bmp);
-        free_options(opt);
-        return 1;
-    }
-    bwrite(bmp_conv, argv[2]);
+        BMP *bmp = bopen(argv[1]);
+        if (bmp == NULL) {
+            fprintf(stderr, "Error opening input file\n");
+            free_options(opt);
+            return 1;
+        }
 
-    bclose(bmp);
-    bclose(bmp_conv);
-    free_options(opt);
+        BMP *bmp_conv = conv_par(bmp, *opt, mode, count_th);
+        if (bmp_conv == NULL) {
+            free_options(opt);
+            return 1;
+        }
+        bwrite(bmp_conv, argv[2]);
+
+        bclose(bmp);
+        bclose(bmp_conv);
+    } else if (strcmp(argv[index_arg], "queue") == 0) {
+        if (argc != 10) {
+            fprintf(stderr, "? are needed for queue convolution\n");
+            free_options(opt);
+            return 1;
+        }
+        index_arg++;
+
+        int count_ths[3] = {1, 1, 1};
+        sscanf(argv[index_arg++], "%d", count_ths);
+        sscanf(argv[index_arg++], "%d", count_ths + 1);
+        sscanf(argv[index_arg], "%d", count_ths + 2);
+        if (count_ths[0] <= 0 || count_ths[1] <= 0 || count_ths[2] <= 0) {
+            fprintf(stderr, "Thread count is natural number\n");
+            free_options(opt);
+            return 1;
+        }
+
+        if (queue_mode(argv, *opt, count_ths)) {
+            free_options(opt);
+            return 1;
+        }
+    } else {
+        fprintf(stderr, "Type is one of [seq, par, queue]\n");
+        free_options(opt);
+        return 1;
+    }
+
     printf("Check %s\n", argv[2]);
+    free_options(opt);
     return 0;
 }

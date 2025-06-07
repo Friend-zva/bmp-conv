@@ -15,6 +15,7 @@ where you let one of the two functions move over every element of the other func
 ```shell
 ./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp id 1 0 seq
 ./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp id 1 0 par row 8
+./build/src/main bmps/source bmps/result id 1 0 queue 2 2 2
 ```
 
 # Test

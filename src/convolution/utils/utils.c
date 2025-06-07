@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "_utils.h"
 
@@ -90,4 +91,20 @@ void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y) {
                       max((int)(opt.factor * g_sum + opt.bias), 0), MAX_VALUE),
                   (unsigned char)min(
                       max((int)(opt.factor * b_sum + opt.bias), 0), MAX_VALUE));
+}
+
+int parse_files(DIR *dir, char **files) {
+    int count = 0;
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_REG) {
+            char *filename = entry->d_name;
+            char *dot = strrchr(filename, '.');
+            if (dot && strcmp(dot, ".bmp") == 0) {
+                files[count++] = filename;
+            }
+        }
+    }
+
+    return count;
 }
