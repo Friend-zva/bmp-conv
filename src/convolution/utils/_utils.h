@@ -1,6 +1,11 @@
 #pragma once
 
+#include <dirent.h>
+#include <pthread.h>
+
 #include "cbmp.h"
+
+#define MAX_VALUE (255)  // 2^8 - 1
 
 typedef struct {
     int height, width;
@@ -18,8 +23,6 @@ typedef struct {
     Filter *filter;
 } Options;
 
-#define MAX_VALUE (255)  // 2^8 - 1
-
 int min(int a, int b);
 
 int max(int a, int b);
@@ -32,3 +35,5 @@ void free_options(Options *opt);
 BMP *b_create(BMP *b_source);
 
 void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y);
+
+int parse_files(DIR *dir, char **files);
