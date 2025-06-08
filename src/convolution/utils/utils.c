@@ -1,8 +1,8 @@
+#include "utils.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "_utils.h"
 
 int min(int a, int b) { return a < b ? a : b; }
 
@@ -11,13 +11,13 @@ int max(int a, int b) { return a > b ? a : b; }
 Filter *create_filter(int measure, const double matrix[measure * measure]) {
     Filter *filter = (Filter *)malloc(sizeof(Filter));
     if (filter == NULL) {
-        fprintf(stderr, "Error allocating memory\n");
+        error(ERROR_MALLOC);
         return NULL;
     }
 
+    filter->matrix = (double *)matrix;
     filter->height = measure;
     filter->width = measure;
-    filter->matrix = (double *)matrix;
 
     return filter;
 }
@@ -30,7 +30,7 @@ void free_options(Options *opt) {
 BMP *b_create(BMP *b_source) {
     BMP *b_new = (BMP *)malloc(sizeof(BMP));
     if (b_new == NULL) {
-        fprintf(stderr, "Error allocating memory\n");
+        error(ERROR_MALLOC);
         return NULL;
     }
 
@@ -43,7 +43,7 @@ BMP *b_create(BMP *b_source) {
     b_new->file_byte_contents = (unsigned char *)malloc(
         b_new->file_byte_number * sizeof(unsigned char));
     if (b_new->file_byte_contents == NULL) {
-        fprintf(stderr, "Error allocating memory\n");
+        error(ERROR_MALLOC);
         free(b_new);
         return NULL;
     }
@@ -55,7 +55,7 @@ BMP *b_create(BMP *b_source) {
     b_new->pixels =
         (pixel *)malloc(b_new->width * b_new->height * sizeof(pixel));
     if (b_new->pixels == NULL) {
-        fprintf(stderr, "Error allocating memory\n");
+        error(ERROR_MALLOC);
         free(b_new->file_byte_contents);
         free(b_new);
         return NULL;
@@ -84,24 +84,25 @@ void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y) {
         }
     }
 
-    set_pixel_rgb(bmp_conv, x, y,
-                  (unsigned char)min(
-                      max((int)(opt.factor * r_sum + opt.bias), 0), MAX_VALUE),
-                  (unsigned char)min(
-                      max((int)(opt.factor * g_sum + opt.bias), 0), MAX_VALUE),
-                  (unsigned char)min(
-                      max((int)(opt.factor * b_sum + opt.bias), 0), MAX_VALUE));
+    set_pixel_rgb(
+        bmp_conv, x, y,
+        (unsigned char)min(max((int)(opt.factor * r_sum + opt.bias), 0),
+                           MAX_VALUE_RGB),
+        (unsigned char)min(max((int)(opt.factor * g_sum + opt.bias), 0),
+                           MAX_VALUE_RGB),
+        (unsigned char)min(max((int)(opt.factor * b_sum + opt.bias), 0),
+                           MAX_VALUE_RGB));
 }
 
 int parse_files(DIR *dir, char **files) {
     int count = 0;
-    struct dirent *entry;
-    while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_type == DT_REG) {
-            char *filename = entry->d_name;
-            char *dot = strrchr(filename, '.');
+    struct dirent *file;
+    while ((file = readdir(dir)) != NULL) {
+        if (file->d_type == DT_REG) {
+            char *name_file = file->d_name;
+            char *dot = strrchr(name_file, '.');
             if (dot && strcmp(dot, ".bmp") == 0) {
-                files[count++] = filename;
+                files[count++] = name_file;
             }
         }
     }

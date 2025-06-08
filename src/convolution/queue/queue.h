@@ -3,7 +3,7 @@
 #include <pthread.h>
 #include <stdatomic.h>
 
-#include "utils/_utils.h"
+#include "utils/utils.h"
 
 typedef struct {
     BMP *bmp_source;

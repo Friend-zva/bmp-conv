@@ -1,7 +1,7 @@
 #include "par.h"
 
 #include "options.h"
-#include "par/_conv.h"
+#include "par/conv.h"
 #include "utils.h"
 
 void non_null_conv_par_test(void **state) {

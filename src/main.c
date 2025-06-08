@@ -6,10 +6,12 @@
 #include "convolution.h"
 #include "options.h"
 
+#define error(...) (fprintf(stderr, __VA_ARGS__))
+
 Options *parse_opts(char **argv) {
     Options *opt = (Options *)malloc(sizeof(Options));
     if (opt == NULL) {
-        fprintf(stderr, "Error allocating memory\n");
+        error(ERROR_MALLOC);
         return NULL;
     }
     int index_arg = 3;
@@ -24,7 +26,7 @@ Options *parse_opts(char **argv) {
     } else if (strcmp(argv[index_arg], "bm") == 0) {
         filter = create_filter(M_BM, f_blur_medium);
     } else {
-        fprintf(stderr, "Filter is one of [one, id, bl, bm]\n");
+        error("Filter is one of [ one | id | bl | bm ]\n");
         free(opt);
         return NULL;
     }
@@ -42,7 +44,7 @@ Options *parse_opts(char **argv) {
         char *error;
         factor = strtod(argv[index_arg], &error);
         if (argv[index_arg] == error || *error != '\0') {
-            fprintf(stderr, "Factor: '%s' is not number\n", argv[index_arg]);
+            error("Factor '%s' is not number\n", argv[index_arg]);
             free_options(opt);
             return NULL;
         }
@@ -57,7 +59,7 @@ Options *parse_opts(char **argv) {
         char *error;
         bias = strtod(argv[index_arg], &error);
         if (argv[index_arg] == error || *error != '\0') {
-            fprintf(stderr, "Bias: '%s' is not number\n", argv[index_arg]);
+            error("Bias '%s' is not number\n", argv[index_arg]);
             free_options(opt);
             return NULL;
         }
@@ -69,22 +71,28 @@ Options *parse_opts(char **argv) {
 
 int main(int argc, char **argv) {
     if (argc < 7 || argc > 10) {
-        fprintf(stderr,
-                "Usage: %s [files] [options] [mode]\n"
-                "\nFiles (in specified order):\n"
-                "  <input  file> for 'seq' and 'par' types;"
-                " <input  directory> for 'queue' type\n"
-                "  <output file> for 'seq' and 'par' types;"
-                " <output directory> for 'queue' type\n"
-                "\nOptions (in specified order):\n"
-                "  <filter=[one|id|bl|bm>]>\n"
-                "  <factor=[def|<double>]>\n"
-                "  <bias  =[def|<double>]>\n"
-                "\nMode (in specified order):\n"
-                "  <type=[seq|par]>\n"
-                "  <mode=[row|column|pixel]> only for 'par' type\n"
-                "  <thread count=<int>>      only for 'par' type\n",
-                argv[0]);
+        error(
+            "Usage: %s [files] [options] [mode]\n"
+            "\nFiles (in specified order):\n"
+            "  <input  file> for 'seq' and 'par' types;"
+            " <input  directory> for 'queue' type\n"
+            "  <output file> for 'seq' and 'par' types;"
+            " <output directory> for 'queue' type\n"
+            "\nOptions (in specified order):\n"
+            "  <filter=[ one | id | bl | bm ]>; 'bl' - lite blur, 'bm' - "
+            "medium blur\n"
+            "  <factor=[ def | <double> ]>; 'def' - default\n"
+            "  <bias  =[ def | <double> ]>; 'def' - default\n"
+            "\nMode (in specified order):\n"
+            "  <type=[ seq | par | queue ]>\n"
+            "  Additional options for 'par' type:\n"
+            "    <mode=[ row | column | pixel ]>\n"
+            "    <number of threads=<int>>\n"
+            "  Additional options for 'queue' type:\n"
+            "    <number of readers=<int>>\n"
+            "    <number of workers=<int>>\n"
+            "    <number of writers=<int>>\n",
+            argv[0]);
         return 1;
     }
 
@@ -97,7 +105,7 @@ int main(int argc, char **argv) {
     if (strcmp(argv[index_arg], "seq") == 0) {
         BMP *bmp = bopen(argv[1]);
         if (bmp == NULL) {
-            fprintf(stderr, "Error opening input file\n");
+            error("Error: opening input file failed\n");
             free_options(opt);
             return 1;
         }
@@ -115,9 +123,9 @@ int main(int argc, char **argv) {
     } else if (strcmp(argv[index_arg], "par") == 0) {
         enum Mode mode;
         if (argc != 9) {
-            fprintf(
-                stderr,
-                "Mode and thread count are needed for parallel convolution\n");
+            error(
+                "Mode and number of threads are needed for parallel "
+                "convolution\n");
             free_options(opt);
             return 1;
         }
@@ -130,28 +138,28 @@ int main(int argc, char **argv) {
         } else if (strcmp(argv[index_arg], "pixel") == 0) {
             mode = PIXEL;
         } else {
-            fprintf(stderr, "Mode is one of [row, column, pixel]\n");
+            error("Mode is one of [ row | column | pixel ]\n");
             free_options(opt);
             return 1;
         }
         index_arg++;
 
-        int count_th = 0;
-        sscanf(argv[index_arg], "%d", &count_th);
-        if (count_th <= 0) {
-            fprintf(stderr, "Thread count is natural number\n");
+        int count_ths = 0;
+        sscanf(argv[index_arg], "%d", &count_ths);
+        if (count_ths <= 0) {
+            error("Number of threads is not natural number\n");
             free_options(opt);
             return 1;
         }
 
         BMP *bmp = bopen(argv[1]);
         if (bmp == NULL) {
-            fprintf(stderr, "Error opening input file\n");
+            error("Error: opening input file failed\n");
             free_options(opt);
             return 1;
         }
 
-        BMP *bmp_conv = conv_par(bmp, *opt, mode, count_th);
+        BMP *bmp_conv = conv_par(bmp, *opt, mode, count_ths);
         if (bmp_conv == NULL) {
             free_options(opt);
             return 1;
@@ -163,7 +171,9 @@ int main(int argc, char **argv) {
         bclose(bmp_conv);
     } else if (strcmp(argv[index_arg], "queue") == 0) {
         if (argc != 10) {
-            fprintf(stderr, "? are needed for queue convolution\n");
+            error(
+                "Number of readers, workers and writers are needed for queue "
+                "convolution\n");
             free_options(opt);
             return 1;
         }
@@ -174,7 +184,7 @@ int main(int argc, char **argv) {
         sscanf(argv[index_arg++], "%d", count_ths + 1);
         sscanf(argv[index_arg], "%d", count_ths + 2);
         if (count_ths[0] <= 0 || count_ths[1] <= 0 || count_ths[2] <= 0) {
-            fprintf(stderr, "Thread count is natural number\n");
+            error("Number of threads is not natural number\n");
             free_options(opt);
             return 1;
         }
@@ -184,7 +194,7 @@ int main(int argc, char **argv) {
             return 1;
         }
     } else {
-        fprintf(stderr, "Type is one of [seq, par, queue]\n");
+        error("Type is one of [ seq | par | queue ]\n");
         free_options(opt);
         return 1;
     }
