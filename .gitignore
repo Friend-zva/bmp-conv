@@ -1,8 +1,18 @@
+# IDE
 .idea
 .vscode
-.DS_Store
 cmake-build-debug
-build
+
+# Python
+__pycache__/
 .venv
-bmps/result
+
+# Mac
+.DS_Store
+
+# Build
+build
 test/config.h
+
+# Usage
+bmps/result

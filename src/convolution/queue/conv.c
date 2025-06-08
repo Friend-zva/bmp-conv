@@ -6,11 +6,11 @@
 #include "queue.h"
 #include "seq/conv.h"
 
-sig_atomic_t count_files = 0;
+int count_files = 0;
 atomic_size_t index_file = 0;
 
-sig_atomic_t count_ths_reader = 0;
-sig_atomic_t count_ths_conv = 0;
+int count_ths_reader = 0;
+int count_ths_conv = 0;
 atomic_size_t count_ths_reader_finished = 0;
 atomic_size_t count_ths_conv_finished = 0;
 
@@ -151,7 +151,7 @@ int queue_mode(char **argv, Options opt, int counts_thread[3]) {
     count_ths_reader = counts_thread[0];
     pthread_t ths_reader[count_ths_reader];
     data_thread_reader data_ths_reader[count_ths_reader];
-    for (int i = 0; i < count_ths_reader; i++) {
+    for (int i = 0; i < counts_thread[0]; i++) {
         data_thread_reader data_th = {
             .q_reader = q_reader,
             .files = files,
@@ -173,7 +173,7 @@ int queue_mode(char **argv, Options opt, int counts_thread[3]) {
     count_ths_conv = counts_thread[1];
     pthread_t ths_conv[count_ths_conv];
     data_thread_conv data_ths_conv[count_ths_conv];
-    for (int i = 0; i < count_ths_conv; i++) {
+    for (int i = 0; i < counts_thread[1]; i++) {
         data_thread_conv data_th = {
             .q_reader = q_reader,
             .q_conv = q_conv,
@@ -194,7 +194,7 @@ int queue_mode(char **argv, Options opt, int counts_thread[3]) {
     int count_ths_writer = counts_thread[2];
     pthread_t ths_writer[count_ths_writer];
     data_thread_writer data_ths_writer[count_ths_writer];
-    for (int i = 0; i < count_ths_writer; i++) {
+    for (int i = 0; i < counts_thread[2]; i++) {
         data_thread_writer data_th = {
             .q_conv = q_conv,
             .name_dir_out = argv[2],
