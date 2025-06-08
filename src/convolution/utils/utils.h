@@ -1,15 +1,20 @@
 #pragma once
 
 #include <dirent.h>
-#include <pthread.h>
 
 #include "cbmp.h"
 
-#define MAX_VALUE (255)  // 2^8 - 1
+#define MAX_VALUE_RGB (255)  // 2^8 - 1
+
+#define ERROR_MALLOC "Error: memory allocation failed\n"
+#define ERROR_PTHREAD_CREATION "Error: pthread creation failed\n"
+#define ERROR_PTHREAD_JOINING "Error: pthread joining failed\n"
+#define error(...) (fprintf(stderr, __VA_ARGS__))
+#define log(...) (fprintf(stderr, __VA_ARGS__))
 
 typedef struct {
-    int height, width;
     double *matrix;
+    int height, width;
 } Filter;
 
 enum Mode {
@@ -19,8 +24,8 @@ enum Mode {
 };
 
 typedef struct {
-    double factor, bias;
     Filter *filter;
+    double factor, bias;
 } Options;
 
 int min(int a, int b);

@@ -1,7 +1,7 @@
 #include "seq.h"
 
 #include "options.h"
-#include "seq/_conv.h"
+#include "seq/conv.h"
 #include "utils.h"
 
 void non_null_conv_seq_test(void **state) {

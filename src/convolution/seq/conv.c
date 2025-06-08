@@ -1,6 +1,6 @@
-#include <stdio.h>
+#include "conv.h"
 
-#include "_conv.h"
+#include <stdio.h>
 
 BMP *conv_seq(BMP *bmp, Options opt) {
     BMP *bmp_conv = b_create(bmp);

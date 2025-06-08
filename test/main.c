@@ -3,9 +3,9 @@
 
 #include "options.h"
 #include "par.h"
-#include "par/_conv.h"  // remove?!
+#include "par/conv.h"  // remove?!
 #include "seq.h"
-#include "seq/_conv.h"  // remove?!
+#include "seq/conv.h"  // remove?!
 #include "utils.h"
 
 static void eq_seq_par_bl_conv_test(void **state) {
