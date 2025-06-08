@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-sig_atomic_t count_ths = 0;            // count pthreads
-sig_atomic_t count_pixels_per_th = 0;  // count pixels per pthread
-sig_atomic_t inaccuracy =
+int count_ths = 0;            // count pthreads
+int count_pixels_per_th = 0;  // count pixels per pthread
+int inaccuracy =
     0;  // additional pixels for each pthread, less than [count_ths]
 
 typedef struct {
