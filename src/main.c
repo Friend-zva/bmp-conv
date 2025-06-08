@@ -108,6 +108,7 @@ int main(int argc, char **argv) {
             return 1;
         }
         bwrite(bmp_conv, argv[2]);
+        printf("Check %s\n", argv[2]);
 
         bclose(bmp);
         bclose(bmp_conv);
@@ -156,6 +157,7 @@ int main(int argc, char **argv) {
             return 1;
         }
         bwrite(bmp_conv, argv[2]);
+        printf("Check %s\n", argv[2]);
 
         bclose(bmp);
         bclose(bmp_conv);
@@ -187,7 +189,6 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    printf("Check %s\n", argv[2]);
     free_options(opt);
     return 0;
 }
