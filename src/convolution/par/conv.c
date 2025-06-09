@@ -153,7 +153,7 @@ int conv_par_mode(char **argv, Options opt, enum Mode mode, int count_threads) {
         return 1;
     }
 
-    BMP *bmp_conv = conv_par(bmp, opt, mode, count_ths);
+    BMP *bmp_conv = conv_par(bmp, opt, mode, count_threads);
     if (bmp_conv == NULL) {
         return 1;
     }
