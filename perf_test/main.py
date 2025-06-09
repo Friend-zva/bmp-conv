@@ -36,7 +36,7 @@ def exec_with_timer(path_file_in, path_file_out, filter, type, mode="", count_th
             end = perf_counter()
 
             if result.stderr:
-                print("Error:", result.stderr)
+                print("Output:", result.stderr)
             if not result.returncode:
                 data.append(end - start)
         except subprocess.TimeoutExpired:
@@ -62,7 +62,7 @@ def run_test_case_single(arr_data, labels, test_case, files_parsed, dir_to_save)
                 )
 
                 if result.stderr:
-                    print("Error:", result.stderr)
+                    print("Output:", result.stderr)
             except subprocess.TimeoutExpired:
                 print("Error: timeout expired")
                 continue
@@ -88,7 +88,7 @@ def run_test_case_queue(arr_data, labels, test_case, dir_to_save):
             )
 
             if result.stderr:
-                print("Error:", result.stderr)
+                print("Output:", result.stderr)
         except subprocess.TimeoutExpired:
             print("Error: timeout expired")
             continue

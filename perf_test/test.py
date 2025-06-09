@@ -20,11 +20,11 @@ test_par_row_bm__ths = [
 
 test_bm_6_ths__par_queue = [
     ["bm", "par", "row", "6"],
-    # ["bm", "queue", "1", "2", "3"],
+    ["bm", "queue", "1", "2", "3"],
     ["bm", "queue", "1", "3", "2"],
     ["bm", "queue", "2", "2", "2"],
     ["bm", "queue", "2", "3", "1"],
-    # ["bm", "queue", "2", "1", "3"],
+    ["bm", "queue", "2", "1", "3"],
     ["bm", "queue", "3", "1", "2"],
     ["bm", "queue", "3", "2", "1"],
 ]
