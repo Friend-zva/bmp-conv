@@ -143,3 +143,28 @@ BMP *conv_par(BMP *bmp_source, Options opt, enum Mode mode, int count_threads) {
 
     return bmp_conv;
 }
+
+int conv_par_mode(char **argv, Options opt, enum Mode mode, int count_threads) {
+    double time_start = get_time();
+
+    BMP *bmp = bopen(argv[1]);
+    if (bmp == NULL) {
+        error("Error: opening input file failed\n");
+        return 1;
+    }
+
+    BMP *bmp_conv = conv_par(bmp, opt, mode, count_ths);
+    if (bmp_conv == NULL) {
+        return 1;
+    }
+
+    bwrite(bmp_conv, argv[2]);
+    double time_end = get_time();
+
+    printf("Check %s\n", argv[2]);
+    log("Log: %fs spent\n", time_end - time_start);
+
+    bclose(bmp);
+    bclose(bmp_conv);
+    return 0;
+}

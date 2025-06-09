@@ -103,23 +103,10 @@ int main(int argc, char **argv) {
 
     int index_arg = 6;
     if (strcmp(argv[index_arg], "seq") == 0) {
-        BMP *bmp = bopen(argv[1]);
-        if (bmp == NULL) {
-            error("Error: opening input file failed\n");
+        if (conv_seq_mode(argv, *opt)) {
             free_options(opt);
             return 1;
         }
-
-        BMP *bmp_conv = conv_seq(bmp, *opt);
-        if (bmp_conv == NULL) {
-            free_options(opt);
-            return 1;
-        }
-        bwrite(bmp_conv, argv[2]);
-        printf("Check %s\n", argv[2]);
-
-        bclose(bmp);
-        bclose(bmp_conv);
     } else if (strcmp(argv[index_arg], "par") == 0) {
         enum Mode mode;
         if (argc != 9) {
@@ -152,23 +139,10 @@ int main(int argc, char **argv) {
             return 1;
         }
 
-        BMP *bmp = bopen(argv[1]);
-        if (bmp == NULL) {
-            error("Error: opening input file failed\n");
+        if (conv_par_mode(argv, *opt, mode, count_ths)) {
             free_options(opt);
             return 1;
         }
-
-        BMP *bmp_conv = conv_par(bmp, *opt, mode, count_ths);
-        if (bmp_conv == NULL) {
-            free_options(opt);
-            return 1;
-        }
-        bwrite(bmp_conv, argv[2]);
-        printf("Check %s\n", argv[2]);
-
-        bclose(bmp);
-        bclose(bmp_conv);
     } else if (strcmp(argv[index_arg], "queue") == 0) {
         if (argc != 10) {
             error(
@@ -189,7 +163,7 @@ int main(int argc, char **argv) {
             return 1;
         }
 
-        if (queue_mode(argv, *opt, count_ths)) {
+        if (conv_queue_mode(argv, *opt, count_ths)) {
             free_options(opt);
             return 1;
         }

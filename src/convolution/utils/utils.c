@@ -3,10 +3,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
 
 int min(int a, int b) { return a < b ? a : b; }
 
 int max(int a, int b) { return a > b ? a : b; }
+
+int parse_files(DIR *dir, char **files) {
+    int count = 0;
+    struct dirent *file;
+    while ((file = readdir(dir)) != NULL) {
+        if (file->d_type == DT_REG) {
+            char *name_file = file->d_name;
+            char *dot = strrchr(name_file, '.');
+            if (dot && strcmp(dot, ".bmp") == 0) {
+                files[count++] = name_file;
+            }
+        }
+    }
+
+    return count;
+}
+
+double get_time(void) {
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    return (double)time.tv_sec + time.tv_usec * 1e-6;
+}
 
 Filter *create_filter(int measure, const double matrix[measure * measure]) {
     Filter *filter = (Filter *)malloc(sizeof(Filter));
@@ -92,20 +115,4 @@ void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y) {
                            MAX_VALUE_RGB),
         (unsigned char)min(max((int)(opt.factor * b_sum + opt.bias), 0),
                            MAX_VALUE_RGB));
-}
-
-int parse_files(DIR *dir, char **files) {
-    int count = 0;
-    struct dirent *file;
-    while ((file = readdir(dir)) != NULL) {
-        if (file->d_type == DT_REG) {
-            char *name_file = file->d_name;
-            char *dot = strrchr(name_file, '.');
-            if (dot && strcmp(dot, ".bmp") == 0) {
-                files[count++] = name_file;
-            }
-        }
-    }
-
-    return count;
 }

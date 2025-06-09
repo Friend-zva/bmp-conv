@@ -115,7 +115,11 @@ void bwrite_parallel(void *_data) {
     }
 }
 
-int cleanup_and_exit(char **files, Queue *q_reader, Queue *q_conv, int code) {
+int cleanup_and_exit(char **files, Queue *q_reader, Queue *q_conv,
+                     double time_start, int code) {
+    double time_end = get_time();
+    log("Log: %fs spent\n", time_end - time_start);
+
     free(files);
     free_queue(q_reader);
     if (q_conv) {
@@ -124,7 +128,9 @@ int cleanup_and_exit(char **files, Queue *q_reader, Queue *q_conv, int code) {
     return code;
 }
 
-int queue_mode(char **argv, Options opt, int counts_thread[3]) {
+int conv_queue_mode(char **argv, Options opt, int counts_thread[3]) {
+    double time_start = get_time();
+
     DIR *dir_in = opendir(argv[1]);
     if (dir_in == NULL) {
         error("Error: opening input directory failed\n");
@@ -164,7 +170,7 @@ int queue_mode(char **argv, Options opt, int counts_thread[3]) {
             if (count_ths_reader > 1) {
                 count_ths_reader--;
             } else {
-                return cleanup_and_exit(files, q_reader, NULL, 1);
+                return cleanup_and_exit(files, q_reader, NULL, time_start, 1);
             }
         }
     }
@@ -186,7 +192,7 @@ int queue_mode(char **argv, Options opt, int counts_thread[3]) {
             if (count_ths_conv > 1) {
                 count_ths_conv--;
             } else {
-                return cleanup_and_exit(files, q_reader, q_conv, 1);
+                return cleanup_and_exit(files, q_reader, q_conv, time_start, 1);
             }
         }
     }
@@ -206,7 +212,7 @@ int queue_mode(char **argv, Options opt, int counts_thread[3]) {
             if (count_ths_writer > 1) {
                 count_ths_writer--;
             } else {
-                return cleanup_and_exit(files, q_reader, q_conv, 1);
+                return cleanup_and_exit(files, q_reader, q_conv, time_start, 1);
             }
         }
     }
@@ -214,21 +220,21 @@ int queue_mode(char **argv, Options opt, int counts_thread[3]) {
     for (int i = 0; i < count_ths_reader; ++i) {
         if (pthread_join(*(ths_reader + i), NULL)) {
             error(ERROR_PTHREAD_JOINING);
-            return cleanup_and_exit(files, q_reader, q_conv, 1);
+            return cleanup_and_exit(files, q_reader, q_conv, time_start, 1);
         }
     }
     for (int i = 0; i < count_ths_conv; ++i) {
         if (pthread_join(*(ths_conv + i), NULL)) {
             error(ERROR_PTHREAD_JOINING);
-            return cleanup_and_exit(files, q_reader, q_conv, 1);
+            return cleanup_and_exit(files, q_reader, q_conv, time_start, 1);
         }
     }
     for (int i = 0; i < count_ths_writer; ++i) {
         if (pthread_join(*(ths_writer + i), NULL)) {
             error(ERROR_PTHREAD_JOINING);
-            return cleanup_and_exit(files, q_reader, q_conv, 1);
+            return cleanup_and_exit(files, q_reader, q_conv, time_start, 1);
         }
     }
 
-    return cleanup_and_exit(files, q_reader, q_conv, 0);
+    return cleanup_and_exit(files, q_reader, q_conv, time_start, 0);
 }

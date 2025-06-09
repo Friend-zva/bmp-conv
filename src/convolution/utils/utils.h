@@ -9,6 +9,7 @@
 #define ERROR_MALLOC "Error: memory allocation failed\n"
 #define ERROR_PTHREAD_CREATION "Error: pthread creation failed\n"
 #define ERROR_PTHREAD_JOINING "Error: pthread joining failed\n"
+
 #define error(...) (fprintf(stderr, __VA_ARGS__))
 #define log(...) (fprintf(stderr, __VA_ARGS__))
 
@@ -32,6 +33,10 @@ int min(int a, int b);
 
 int max(int a, int b);
 
+int parse_files(DIR *dir, char **files);
+
+double get_time(void);
+
 Filter *create_filter(int measure, const double matrix[measure * measure]);
 
 void free_options(Options *opt);
@@ -40,5 +45,3 @@ void free_options(Options *opt);
 BMP *b_create(BMP *b_source);
 
 void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y);
-
-int parse_files(DIR *dir, char **files);
