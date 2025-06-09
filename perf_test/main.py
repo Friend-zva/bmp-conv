@@ -103,7 +103,6 @@ def main():
 
     index = 0
     tests = [test_bl__seq_par, test_par_row_bm__ths]
-
     for name_file in files_parsed:
         dir_to_save = path_save_plot + name_file[:-4] + "/"
         create_dir(dir_to_save)
@@ -137,11 +136,12 @@ def main():
 
     dir_to_save = "perf_test/plots/queue/"
     create_dir(dir_to_save)
-
     arr_data = []
     labels = []
+
     print(f"Running {index + 1} test")
     test = test_bm_6_ths__par_queue
+
     run_test_case_single(arr_data, labels, test[0], files_parsed, dir_to_save)
     for test_case in test[1:]:
         run_test_case_queue(arr_data, labels, test_case, dir_to_save)
