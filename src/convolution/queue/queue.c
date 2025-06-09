@@ -86,6 +86,7 @@ data_queue *pop_queue(Queue *queue) {
 
     while (queue->head == NULL) {
         if (*(queue->terminal)) {
+            pthread_mutex_unlock(queue->mutex_pop);
             return NULL;
         }
         continue;
