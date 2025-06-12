@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
             "  <factor=[ def | <double> ]>; 'def' - default\n"
             "  <bias  =[ def | <double> ]>; 'def' - default\n"
             "\nMode (in specified order):\n"
-            "  <type=[ seq | par | queue ]>\n"
+            "  <type=[ seq | par | queue | gpu ]>\n"
             "  Additional options for 'par' type:\n"
             "    <mode=[ row | column | pixel ]>\n"
             "    <number of threads=<int>>\n"
@@ -167,8 +167,13 @@ int main(int argc, char **argv) {
             free_options(opt);
             return 1;
         }
+    } else if (strcmp(argv[index_arg], "gpu") == 0) {
+        if (conv_gpu_seq_mode(argv, *opt)) {
+            free_options(opt);
+            return 1;
+        }
     } else {
-        error("Type is one of [ seq | par | queue ]\n");
+        error("Type is one of [ seq | par | queue | gpu ]\n");
         free_options(opt);
         return 1;
     }
