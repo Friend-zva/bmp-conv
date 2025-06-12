@@ -91,18 +91,21 @@ void apply_filter(BMP *bmp, BMP *bmp_conv, Options opt, int x, int y) {
     const int width = get_width(bmp), height = get_height(bmp);
     double r_sum = 0.0, g_sum = 0.0, b_sum = 0.0;
 
+    int center_height_f = opt.filter->height / 2;
+    int center_width_f = opt.filter->width / 2;
     unsigned int index_f = 0;
     for (int y_f = 0; y_f < opt.filter->height; y_f++) {
         for (int x_f = 0; x_f < opt.filter->width; x_f++) {
-            int y_loc = (y - opt.filter->height / 2 + y_f + height) % height;
-            int x_loc = (x - opt.filter->width / 2 + x_f + width) % width;
+            int y_loc = (y - center_height_f + y_f + height) % height;
+            int x_loc = (x - center_width_f + x_f + width) % width;
 
             unsigned char r = 0, g = 0, b = 0;
             get_pixel_rgb(bmp, x_loc, y_loc, &r, &g, &b);
 
-            r_sum += (double)r * opt.filter->matrix[index_f];
-            g_sum += (double)g * opt.filter->matrix[index_f];
-            b_sum += (double)b * opt.filter->matrix[index_f];
+            double value = opt.filter->matrix[index_f];
+            r_sum += (double)r * value;
+            g_sum += (double)g * value;
+            b_sum += (double)b * value;
             index_f++;
         }
     }
