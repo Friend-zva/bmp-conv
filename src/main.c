@@ -6,12 +6,12 @@
 #include "convolution.h"
 #include "options.h"
 
-#define error(...) (fprintf(stderr, __VA_ARGS__))
+#define fpr_err(...) (fprintf(stderr, __VA_ARGS__))
 
 Options *parse_opts(char **argv) {
     Options *opt = (Options *)malloc(sizeof(Options));
     if (opt == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         return NULL;
     }
     int index_arg = 3;
@@ -26,7 +26,7 @@ Options *parse_opts(char **argv) {
     } else if (strcmp(argv[index_arg], "bm") == 0) {
         filter = create_filter(M_BM, f_blur_medium);
     } else {
-        error("Filter is one of [ one | id | bl | bm ]\n");
+        fpr_err("Filter is one of [ one | id | bl | bm ]\n");
         free(opt);
         return NULL;
     }
@@ -44,7 +44,7 @@ Options *parse_opts(char **argv) {
         char *error;
         factor = strtod(argv[index_arg], &error);
         if (argv[index_arg] == error || *error != '\0') {
-            error("Factor '%s' is not number\n", argv[index_arg]);
+            fpr_err("Factor '%s' is not number\n", argv[index_arg]);
             free_options(opt);
             return NULL;
         }
@@ -59,7 +59,7 @@ Options *parse_opts(char **argv) {
         char *error;
         bias = strtod(argv[index_arg], &error);
         if (argv[index_arg] == error || *error != '\0') {
-            error("Bias '%s' is not number\n", argv[index_arg]);
+            fpr_err("Bias '%s' is not number\n", argv[index_arg]);
             free_options(opt);
             return NULL;
         }
@@ -71,7 +71,7 @@ Options *parse_opts(char **argv) {
 
 int main(int argc, char **argv) {
     if (argc < 7 || argc > 10) {
-        error(
+        fpr_err(
             "Usage: %s [files] [options] [mode]\n"
             "\nFiles (in specified order):\n"
             "  <input  file> for 'seq' and 'par' types;"
@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
     } else if (strcmp(argv[index_arg], "par") == 0) {
         enum Mode mode;
         if (argc != 9) {
-            error(
+            fpr_err(
                 "Mode and number of threads are needed for parallel "
                 "convolution\n");
             free_options(opt);
@@ -125,7 +125,7 @@ int main(int argc, char **argv) {
         } else if (strcmp(argv[index_arg], "pixel") == 0) {
             mode = PIXEL;
         } else {
-            error("Mode is one of [ row | column | pixel ]\n");
+            fpr_err("Mode is one of [ row | column | pixel ]\n");
             free_options(opt);
             return 1;
         }
@@ -134,7 +134,7 @@ int main(int argc, char **argv) {
         int count_ths = 0;
         sscanf(argv[index_arg], "%d", &count_ths);
         if (count_ths <= 0) {
-            error("Number of threads is not natural number\n");
+            fpr_err("Number of threads is not natural number\n");
             free_options(opt);
             return 1;
         }
@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
         }
     } else if (strcmp(argv[index_arg], "queue") == 0) {
         if (argc != 10) {
-            error(
+            fpr_err(
                 "Number of readers, workers and writers are needed for queue "
                 "convolution\n");
             free_options(opt);
@@ -158,7 +158,7 @@ int main(int argc, char **argv) {
         sscanf(argv[index_arg++], "%d", count_ths + 1);
         sscanf(argv[index_arg], "%d", count_ths + 2);
         if (count_ths[0] <= 0 || count_ths[1] <= 0 || count_ths[2] <= 0) {
-            error("Number of threads is not natural number\n");
+            fpr_err("Number of threads is not natural number\n");
             free_options(opt);
             return 1;
         }
@@ -173,7 +173,7 @@ int main(int argc, char **argv) {
             return 1;
         }
     } else {
-        error("Type is one of [ seq | par | queue | gpu ]\n");
+        fpr_err("Type is one of [ seq | par | queue | gpu ]\n");
         free_options(opt);
         return 1;
     }

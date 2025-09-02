@@ -23,7 +23,7 @@ int conv_seq_mode(char **argv, Options opt) {
 
     BMP *bmp = bopen(argv[1]);
     if (bmp == NULL) {
-        error("Error: opening input file failed\n");
+        fpr_err("Error: opening input file failed\n");
         return 1;
     }
 
@@ -36,7 +36,7 @@ int conv_seq_mode(char **argv, Options opt) {
     double time_end = get_time();
 
     printf("Check %s\n", argv[2]);
-    log("Log: %fs spent\n", time_end - time_start);
+    fpr_log("Log: %fs spent\n", time_end - time_start);
 
     bclose(bmp);
     bclose(bmp_conv);

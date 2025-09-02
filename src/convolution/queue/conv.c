@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "gpu/conv.h"
 #include "queue.h"
 #include "seq/conv.h"
 
@@ -47,7 +48,7 @@ void bopen_parallel(void *_data) {
     if (atomic_fetch_add(&count_ths_reader_finished, 1) ==
         count_ths_reader - 1) {
         atomic_exchange(q_reader->terminal, 1);
-        log("Log: readers finished\n");
+        fpr_log("Log: readers finished\n");
     }
 }
 
@@ -69,6 +70,7 @@ void conv_parallel(void *_data) {
             continue;
         }
 
+        // BMP *bmp_conv = conv_gpu_seq(data_q->bmp_source, opt);
         BMP *bmp_conv = conv_seq(data_q->bmp_source, opt);
         if (bmp_conv == NULL) {
             continue;
@@ -84,7 +86,7 @@ void conv_parallel(void *_data) {
 
     if (atomic_fetch_add(&count_ths_conv_finished, 1) == count_ths_conv - 1) {
         atomic_exchange(q_conv->terminal, 1);
-        log("Log: workers finished\n");
+        fpr_log("Log: workers finished\n");
     }
 }
 
@@ -118,7 +120,7 @@ void bwrite_parallel(void *_data) {
 int cleanup_and_exit(char **files, Queue *q_reader, Queue *q_conv,
                      double time_start, int code) {
     double time_end = get_time();
-    log("Log: %fs spent\n", time_end - time_start);
+    fpr_log("Log: %fs spent\n", time_end - time_start);
 
     free(files);
     free_queue(q_reader);
@@ -133,13 +135,13 @@ int conv_queue_mode(char **argv, Options opt, int counts_thread[3]) {
 
     DIR *dir_in = opendir(argv[1]);
     if (dir_in == NULL) {
-        error("Error: opening input directory failed\n");
+        fpr_err("Error: opening input directory failed\n");
         return 1;
     }
 
     char **files = (char **)malloc(256 * sizeof(char *));
     if (files == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         closedir(dir_in);
         return 1;
     }
@@ -147,11 +149,11 @@ int conv_queue_mode(char **argv, Options opt, int counts_thread[3]) {
     count_files = parse_files(dir_in, files);
     closedir(dir_in);
     if (count_files < 1) {
-        error("Empty input directory\n");
+        fpr_err("Empty input directory\n");
         free(files);
         return 1;
     }
-    log("Log: %d parsed files\n", count_files);
+    fpr_log("Log: %d parsed files\n", count_files);
 
     Queue *q_reader = init_queue();
     count_ths_reader = counts_thread[0];
@@ -166,7 +168,7 @@ int conv_queue_mode(char **argv, Options opt, int counts_thread[3]) {
         data_ths_reader[i] = data_th;
         if (pthread_create(ths_reader + i, NULL, (void *)bopen_parallel,
                            (void *)(data_ths_reader + i))) {
-            error(ERROR_PTHREAD_CREATION);
+            fpr_err(ERROR_PTHREAD_CREATION);
             if (count_ths_reader > 1) {
                 count_ths_reader--;
             } else {
@@ -188,7 +190,7 @@ int conv_queue_mode(char **argv, Options opt, int counts_thread[3]) {
         data_ths_conv[i] = data_th;
         if (pthread_create(ths_conv + i, NULL, (void *)conv_parallel,
                            (void *)(data_ths_conv + i))) {
-            error(ERROR_PTHREAD_CREATION);
+            fpr_err(ERROR_PTHREAD_CREATION);
             if (count_ths_conv > 1) {
                 count_ths_conv--;
             } else {
@@ -208,7 +210,7 @@ int conv_queue_mode(char **argv, Options opt, int counts_thread[3]) {
         data_ths_writer[i] = data_th;
         if (pthread_create(ths_writer + i, NULL, (void *)bwrite_parallel,
                            (void *)(data_ths_writer + i))) {
-            error(ERROR_PTHREAD_CREATION);
+            fpr_err(ERROR_PTHREAD_CREATION);
             if (count_ths_writer > 1) {
                 count_ths_writer--;
             } else {
@@ -219,19 +221,19 @@ int conv_queue_mode(char **argv, Options opt, int counts_thread[3]) {
 
     for (int i = 0; i < count_ths_reader; ++i) {
         if (pthread_join(*(ths_reader + i), NULL)) {
-            error(ERROR_PTHREAD_JOINING);
+            fpr_err(ERROR_PTHREAD_JOINING);
             return cleanup_and_exit(files, q_reader, q_conv, time_start, 1);
         }
     }
     for (int i = 0; i < count_ths_conv; ++i) {
         if (pthread_join(*(ths_conv + i), NULL)) {
-            error(ERROR_PTHREAD_JOINING);
+            fpr_err(ERROR_PTHREAD_JOINING);
             return cleanup_and_exit(files, q_reader, q_conv, time_start, 1);
         }
     }
     for (int i = 0; i < count_ths_writer; ++i) {
         if (pthread_join(*(ths_writer + i), NULL)) {
-            error(ERROR_PTHREAD_JOINING);
+            fpr_err(ERROR_PTHREAD_JOINING);
             return cleanup_and_exit(files, q_reader, q_conv, time_start, 1);
         }
     }
