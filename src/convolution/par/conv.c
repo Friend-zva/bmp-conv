@@ -127,7 +127,7 @@ BMP *conv_par(BMP *bmp_source, Options opt, enum Mode mode, int count_threads) {
                 func_conv = (void *)conv_pixel_par;
         }
         if (pthread_create(ths + i, NULL, func_conv, (void *)(data_ths + i))) {
-            error(ERROR_PTHREAD_CREATION);
+            fpr_err(ERROR_PTHREAD_CREATION);
             free(bmp_conv);
             return NULL;
         }
@@ -135,7 +135,7 @@ BMP *conv_par(BMP *bmp_source, Options opt, enum Mode mode, int count_threads) {
 
     for (int i = 0; i < count_threads; ++i) {
         if (pthread_join(*(ths + i), NULL)) {
-            error(ERROR_PTHREAD_JOINING);
+            fpr_err(ERROR_PTHREAD_JOINING);
             free(bmp_conv);
             return NULL;
         }
@@ -149,7 +149,7 @@ int conv_par_mode(char **argv, Options opt, enum Mode mode, int count_threads) {
 
     BMP *bmp = bopen(argv[1]);
     if (bmp == NULL) {
-        error("Error: opening input file failed\n");
+        fpr_err("Error: opening input file failed\n");
         return 1;
     }
 
@@ -162,7 +162,7 @@ int conv_par_mode(char **argv, Options opt, enum Mode mode, int count_threads) {
     double time_end = get_time();
 
     printf("Check %s\n", argv[2]);
-    log("Log: %fs spent\n", time_end - time_start);
+    fpr_log("Log: %fs spent\n", time_end - time_start);
 
     bclose(bmp);
     bclose(bmp_conv);

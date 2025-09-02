@@ -6,7 +6,7 @@
 data_queue *init_data_queue(BMP *bmp_source, BMP *bmp_conv, char *name_file) {
     data_queue *data_q = (data_queue *)malloc(sizeof(data_queue));
     if (data_q == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         return NULL;
     }
     data_q->bmp_source = bmp_source;
@@ -18,7 +18,7 @@ data_queue *init_data_queue(BMP *bmp_source, BMP *bmp_conv, char *name_file) {
 Queue *init_queue() {
     Queue *queue = (Queue *)malloc(sizeof(Queue));
     if (queue == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         return NULL;
     }
     queue->head = queue->tail = NULL;
@@ -28,7 +28,7 @@ Queue *init_queue() {
     queue->terminal = (atomic_bool *)calloc(1, sizeof(atomic_bool));
     if (queue->mutex_push == NULL || queue->mutex_pop == NULL ||
         queue->terminal == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         free_queue(queue);
         return NULL;
     }
@@ -52,13 +52,13 @@ int push_queue(Queue *queue, data_queue *data) {
     pthread_mutex_lock(queue->mutex_push);
 
     if (queue == NULL || data == NULL) {
-        error("Error: nullable queue or data\n");
+        fpr_err("Error: nullable queue or data\n");
         return 1;
     }
 
     node_queue *tail_new = malloc(sizeof(node_queue));
     if (tail_new == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         return 1;
     }
 
@@ -80,7 +80,7 @@ data_queue *pop_queue(Queue *queue) {
     pthread_mutex_lock(queue->mutex_pop);
 
     if (queue == NULL) {
-        error("Error: nullable queue\n");
+        fpr_err("Error: nullable queue\n");
         return NULL;
     }
 

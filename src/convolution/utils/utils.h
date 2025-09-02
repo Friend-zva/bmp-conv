@@ -10,8 +10,8 @@
 #define ERROR_PTHREAD_CREATION "Error: pthread creation failed\n"
 #define ERROR_PTHREAD_JOINING "Error: pthread joining failed\n"
 
-#define error(...) (fprintf(stderr, __VA_ARGS__))
-#define log(...) (fprintf(stderr, __VA_ARGS__))
+#define fpr_err(...) (fprintf(stderr, __VA_ARGS__))
+#define fpr_log(...) (fprintf(stderr, __VA_ARGS__))
 
 typedef struct {
     double *matrix;
@@ -28,10 +28,6 @@ typedef struct {
     Filter *filter;
     double factor, bias;
 } Options;
-
-int min(int a, int b);
-
-int max(int a, int b);
 
 int parse_files(DIR *dir, char **files);
 

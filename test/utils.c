@@ -58,7 +58,7 @@ Filter generate_filter_random(int measure) {
 
     filter.matrix = (double *)malloc(measure * measure * sizeof(double));
     if (!filter.matrix) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         exit(1);
     }
 
@@ -78,7 +78,7 @@ Options generate_options_random(int measure) {
 
     opt.filter = (Filter *)malloc(sizeof(Filter));
     if (!opt.filter) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         exit(1);
     }
     *opt.filter = filter;

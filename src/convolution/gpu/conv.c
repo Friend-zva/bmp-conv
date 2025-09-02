@@ -15,7 +15,7 @@
 char *read_source_kernel(const char *filename) {
     FILE *file = fopen(filename, "rb");
     if (file == NULL) {
-        error("Error: opening kernel source failed\n");
+        fpr_err("Error: opening kernel source failed\n");
         return NULL;
     }
 
@@ -23,7 +23,7 @@ char *read_source_kernel(const char *filename) {
     long length = ftell(file);
     if (length < 0) {
         fclose(file);
-        error("Error: unnatural file length\n");
+        fpr_err("Error: unnatural file length\n");
         return NULL;
     }
     fseek(file, 0, SEEK_SET);
@@ -67,6 +67,7 @@ BMP *cleanup_and_return(BMP *bmp_conv, float *matrix, char *source_kernel,
     return NULL;
 }
 
+// NOLINTBEGIN
 BMP *conv_gpu_seq(BMP *bmp, Options opt) {
     BMP *bmp_conv = b_create(bmp);
     if (bmp_conv == NULL) {
@@ -76,7 +77,7 @@ BMP *conv_gpu_seq(BMP *bmp, Options opt) {
     int size_matrix_f = opt.filter->height * opt.filter->width * sizeof(float);
     float *matrix = (float *)malloc(size_matrix_f);
     if (matrix == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         bclose(bmp_conv);
         return NULL;
     }
@@ -105,7 +106,7 @@ BMP *conv_gpu_seq(BMP *bmp, Options opt) {
     cl_program program = clCreateProgramWithSource(
         context, 1, (const char **)&source_kernel, NULL, NULL);
     clBuildProgram(program, 1, &device, NULL, NULL, NULL);
-    cl_kernel kernel = clCreateKernel(program, "apply_filter", NULL);
+    cl_kernel kernel = clCreateKernel(program, "apply_filter_tiled", NULL);
 
     int height = get_height(bmp);
     int width = get_width(bmp);
@@ -113,7 +114,7 @@ BMP *conv_gpu_seq(BMP *bmp, Options opt) {
 
     unsigned char *data_source = (unsigned char *)malloc(size_buf);
     if (data_source == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         cleanup_and_return(bmp_conv, matrix, source_kernel, NULL, NULL, NULL,
                            NULL, NULL, &kernel, &program, &queue, &context,
                            &device, 0);
@@ -160,7 +161,7 @@ BMP *conv_gpu_seq(BMP *bmp, Options opt) {
 
     unsigned char *data_conv = (unsigned char *)malloc(size_buf);
     if (data_conv == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         return cleanup_and_return(bmp_conv, matrix, source_kernel, data_source,
                                   NULL, &buf_source, &buf_conv, &buf_matrix_f,
                                   &kernel, &program, &queue, &context, &device,
@@ -186,13 +187,14 @@ BMP *conv_gpu_seq(BMP *bmp, Options opt) {
                               data_conv, &buf_source, &buf_conv, &buf_matrix_f,
                               &kernel, &program, &queue, &context, &device, 1);
 }
+// NOLINTEND
 
 int conv_gpu_seq_mode(char **argv, Options opt) {
     double time_start = get_time();
 
     BMP *bmp = bopen(argv[1]);
     if (bmp == NULL) {
-        error("Error: opening input file failed\n");
+        fpr_err("Error: opening input file failed\n");
         return 1;
     }
 
@@ -205,7 +207,7 @@ int conv_gpu_seq_mode(char **argv, Options opt) {
     double time_end = get_time();
 
     printf("Check %s\n", argv[2]);
-    log("Log: %fs spent\n", time_end - time_start);
+    fpr_log("Log: %fs spent\n", time_end - time_start);
 
     bclose(bmp);
     bclose(bmp_conv);

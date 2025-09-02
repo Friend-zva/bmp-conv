@@ -34,7 +34,7 @@ double get_time(void) {
 Filter *create_filter(int measure, const double matrix[measure * measure]) {
     Filter *filter = (Filter *)malloc(sizeof(Filter));
     if (filter == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         return NULL;
     }
 
@@ -53,7 +53,7 @@ void free_options(Options *opt) {
 BMP *b_create(BMP *b_source) {
     BMP *b_new = (BMP *)malloc(sizeof(BMP));
     if (b_new == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         return NULL;
     }
 
@@ -66,7 +66,7 @@ BMP *b_create(BMP *b_source) {
     b_new->file_byte_contents = (unsigned char *)malloc(
         b_new->file_byte_number * sizeof(unsigned char));
     if (b_new->file_byte_contents == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         free(b_new);
         return NULL;
     }
@@ -78,7 +78,7 @@ BMP *b_create(BMP *b_source) {
     b_new->pixels =
         (pixel *)malloc(b_new->width * b_new->height * sizeof(pixel));
     if (b_new->pixels == NULL) {
-        error(ERROR_MALLOC);
+        fpr_err(ERROR_MALLOC);
         free(b_new->file_byte_contents);
         free(b_new);
         return NULL;
