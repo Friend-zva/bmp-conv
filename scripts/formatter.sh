@@ -3,5 +3,5 @@
 BASEDIR=$(realpath "$(dirname "$0")")
 ROOTDIR=$(realpath "$BASEDIR/..")
 
-find "$ROOTDIR/src" | grep -E ".*(\.c|\.h)" | xargs clang-format --dry-run
-find "$ROOTDIR/test" | grep -E ".*(\.c|\.h)" | xargs clang-format --dry-run
+find "$ROOTDIR/src"  \( -name '*.c' -o -name '*.h' \) -print0 | xargs clang-format --dry-run
+find "$ROOTDIR/test" \( -name '*.c' -o -name '*.h' \) -print0 | xargs clang-format --dry-run
