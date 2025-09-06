@@ -23,6 +23,7 @@ typedef struct {
     node_queue *tail;
     pthread_mutex_t *mutex_push;
     pthread_mutex_t *mutex_pop;
+    pthread_mutex_t *mutex_terminal;
     atomic_bool *terminal;
 } Queue;
 
