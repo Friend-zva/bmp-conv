@@ -167,11 +167,13 @@ int main(int argc, char **argv) {
             free_options(opt);
             return 1;
         }
+#if OpenCL_SUPPORT
     } else if (strcmp(argv[index_arg], "gpu") == 0) {
         if (conv_gpu_seq_mode(argv, *opt)) {
             free_options(opt);
             return 1;
         }
+#endif
     } else {
         fpr_err("Type is one of [ seq | par | queue | gpu ]\n");
         free_options(opt);
