@@ -3,9 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "gpu/conv.h"
 #include "queue.h"
 #include "seq/conv.h"
+
+#if OpenCL_SUPPORT
+#include "gpu/conv.h"
+#endif
 
 int count_files = 0;
 atomic_size_t index_file = 0;
@@ -70,8 +73,12 @@ void conv_parallel(void *_data) {
             continue;
         }
 
-        // BMP *bmp_conv = conv_gpu_seq(data_q->bmp_source, opt);
+#if OpenCL_SUPPORT
+        BMP *bmp_conv = conv_gpu_seq(data_q->bmp_source, opt);
+#else
         BMP *bmp_conv = conv_seq(data_q->bmp_source, opt);
+#endif
+
         if (bmp_conv == NULL) {
             continue;
         }

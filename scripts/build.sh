@@ -3,5 +3,5 @@
 BASEDIR=$(realpath "$(dirname "$0")")
 ROOTDIR=$(realpath "$BASEDIR/..")
 
-cmake -S . -B "$ROOTDIR/build" -DUNIT_TESTING=ON
+cmake -S . -B "$ROOTDIR/build" -DUNIT_TESTING=ON -DOpenCL_SUPPORT=OFF
 cmake --build "$ROOTDIR/build"
