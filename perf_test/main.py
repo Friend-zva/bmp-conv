@@ -20,25 +20,23 @@ factor = "def"
 bias = "def"
 
 
-def exec_with_timer(path_file_in, path_file_out, filter, type, mode="", count_ths=""):
+def exec(path_file_in, path_file_out, filter, type, mode="", count_ths=""):
     print(f"  Executing bmp-conv on {path_file_in}")
     data = []
 
     for _ in range(0, COUNT_TESTS):
         try:
-            start = perf_counter()
             result = subprocess.run(
                 [path_exec, path_file_in, path_file_out, filter, factor, bias, type, mode, count_ths],
                 capture_output=True,
                 text=True,
                 timeout=LIMIT_TIME,
             )
-            end = perf_counter()
 
             # if result.stderr:
                 # print("Output:\n", result.stderr, sep="")
             if not result.returncode:
-                data.append(end - start)
+                data.append(get_time(result.stderr))
         except subprocess.TimeoutExpired:
             print("Error: timeout expired")
 
@@ -50,7 +48,7 @@ def run_test_case_single(arr_data, labels, test_case, files_parsed, dir_to_save)
     data = []
 
     for _ in range(0, COUNT_TESTS):
-        start = perf_counter()
+        time = 0.0
         for name_file in files_parsed:
             try:
                 result = subprocess.run(
@@ -61,13 +59,14 @@ def run_test_case_single(arr_data, labels, test_case, files_parsed, dir_to_save)
                     timeout=LIMIT_TIME,
                 )
 
+                time += get_time(result.stderr)
                 # if result.stderr:
                     # print("Output:\n", result.stderr, sep="")
             except subprocess.TimeoutExpired:
                 print("Error: timeout expired")
                 continue
-        end = perf_counter()
-        data.append(end - start)
+        data.append(time)
+
     if not (len(data) == 0):
         output_test_case(arr_data, labels, test_case, data, dir_to_save)
 
@@ -77,7 +76,6 @@ def run_test_case_queue(arr_data, labels, test_case, dir_to_save):
     data = []
 
     for _ in range(0, COUNT_TESTS):
-        start = perf_counter()
         try:
             result = subprocess.run(
                 [path_exec, path_dir_in, path_dir_out, test_case[0],
@@ -92,8 +90,8 @@ def run_test_case_queue(arr_data, labels, test_case, dir_to_save):
         except subprocess.TimeoutExpired:
             print("Error: timeout expired")
             continue
-        end = perf_counter()
-        data.append(end - start)
+        data.append(get_time(result.stderr))
+
     if not (len(data) == 0):
         output_test_case(arr_data, labels, test_case, data, dir_to_save)
 
@@ -112,7 +110,7 @@ def main():
         labels = []
         print(f"Running {index + 1} test")
         for test_case in test:
-            data = exec_with_timer(
+            data = exec(
                 path_dir_in + name_file,
                 path_dir_out + name_file,
                 test_case[0],
