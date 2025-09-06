@@ -25,9 +25,10 @@ Queue *init_queue() {
 
     queue->mutex_push = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
     queue->mutex_pop = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+    queue->mutex_terminal = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
     queue->terminal = (atomic_bool *)calloc(1, sizeof(atomic_bool));
     if (queue->mutex_push == NULL || queue->mutex_pop == NULL ||
-        queue->terminal == NULL) {
+        queue->mutex_terminal == NULL || queue->terminal == NULL) {
         fpr_err(ERROR_MALLOC);
         free_queue(queue);
         return NULL;
@@ -35,6 +36,7 @@ Queue *init_queue() {
 
     pthread_mutex_init(queue->mutex_push, NULL);
     pthread_mutex_init(queue->mutex_pop, NULL);
+    pthread_mutex_init(queue->mutex_terminal, NULL);
 
     return queue;
 }
@@ -42,8 +44,10 @@ Queue *init_queue() {
 void free_queue(Queue *queue) {
     if (queue->mutex_push) pthread_mutex_destroy(queue->mutex_push);
     if (queue->mutex_pop) pthread_mutex_destroy(queue->mutex_pop);
+    if (queue->mutex_terminal) pthread_mutex_destroy(queue->mutex_terminal);
     free(queue->mutex_push);
     free(queue->mutex_pop);
+    free(queue->mutex_terminal);
     free(queue->terminal);
     free(queue);
 }
@@ -65,11 +69,13 @@ int push_queue(Queue *queue, data_queue *data) {
     tail_new->data = data;
     tail_new->next = NULL;
 
+    pthread_mutex_lock(queue->mutex_terminal);
     if (queue->tail) {
         queue->tail->next = tail_new;
     } else {
         queue->head = tail_new;
     }
+    pthread_mutex_unlock(queue->mutex_terminal);
     queue->tail = tail_new;
 
     pthread_mutex_unlock(queue->mutex_push);
@@ -96,9 +102,11 @@ data_queue *pop_queue(Queue *queue) {
     data_queue *data = head->data;
 
     queue->head = head->next;
+    pthread_mutex_lock(queue->mutex_terminal);
     if (queue->head == NULL) {
         queue->tail = NULL;
     }
+    pthread_mutex_unlock(queue->mutex_terminal);
 
     free(head);
     pthread_mutex_unlock(queue->mutex_pop);
