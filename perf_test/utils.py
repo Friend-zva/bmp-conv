@@ -21,3 +21,11 @@ def parse_files(path_dir):
             files_parsed.append(path_rel)
 
     return files_parsed
+
+
+def get_time(string):
+    if string:
+        line_time = string.strip().split('\n')[-1]
+        time = line_time.split()[1]
+        return float(time[0:-1])
+    return 0.0

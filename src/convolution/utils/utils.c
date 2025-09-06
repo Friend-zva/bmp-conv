@@ -5,6 +5,8 @@
 #include <string.h>
 #include <sys/time.h>
 
+#define DEGREE (1e9)
+
 int min(int a, int b) { return a < b ? a : b; }
 
 int max(int a, int b) { return a > b ? a : b; }
@@ -26,9 +28,9 @@ int parse_files(DIR *dir, char **files) {
 }
 
 double get_time(void) {
-    struct timeval time;
-    gettimeofday(&time, NULL);
-    return (double)time.tv_sec + time.tv_usec * 1e-6;
+    struct timespec time;
+    clock_gettime(CLOCK_MONOTONIC, &time);
+    return (double)time.tv_sec + (double)time.tv_nsec / DEGREE;
 }
 
 Filter *create_filter(int measure, const double matrix[measure * measure]) {
