@@ -1,7 +1,7 @@
 file(GLOB_RECURSE C_SOURCES ./*.c)
 
 if(NOT OpenCL_SUPPORT)
-    list(REMOVE_ITEM C_SOURCES ./qpu/*.c)
+    list(REMOVE_ITEM C_SOURCES ./gpu/*.c)
 endif()
 
 add_library(convolution ${C_SOURCES})

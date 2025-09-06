@@ -1,13 +1,13 @@
 #include "conv.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
 #include <CL/cl.h>
 #endif
-
-#include <stdio.h>
-#include <stdlib.h>
 
 #define SOURCE_KERNEL ("src/convolution/gpu/operation.cl")
 #define COUNT_COLOR (3)  // RGB
