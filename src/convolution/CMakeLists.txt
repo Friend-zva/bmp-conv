@@ -1,6 +1,6 @@
 file(GLOB_RECURSE SOURCES_C *.c)
 
-if(NOT OpenCL_SUPPORT)
+if(NOT OPENCL_SUPPORT)
     file(GLOB_RECURSE SOURCES_GPU gpu/*.c)
     list(REMOVE_ITEM SOURCES_C ${SOURCES_GPU})
 endif()
@@ -8,7 +8,7 @@ endif()
 add_library(convolution ${SOURCES_C})
 target_link_libraries(convolution PUBLIC cbmp)
 
-if(OpenCL_SUPPORT)
+if(OPENCL_SUPPORT)
     if(APPLE)
         target_link_libraries(convolution PRIVATE "-framework OpenCL")
     else()
