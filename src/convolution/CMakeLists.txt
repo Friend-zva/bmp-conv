@@ -1,7 +1,7 @@
-file(GLOB_RECURSE SOURCES_C ./*.c)
+file(GLOB_RECURSE SOURCES_C *.c)
 
 if(NOT OpenCL_SUPPORT)
-    file(GLOB_RECURSE SOURCES_GPU ./gpu/*.c)
+    file(GLOB_RECURSE SOURCES_GPU gpu/*.c)
     list(REMOVE_ITEM SOURCES_C ${SOURCES_GPU})
 endif()
 
