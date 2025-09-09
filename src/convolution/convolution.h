@@ -4,6 +4,6 @@
 #include "queue/conv.h"
 #include "seq/conv.h"
 
-#if OpenCL_SUPPORT
+#if OpenCL_SUPPORT == 1
 #include "gpu/conv.h"
 #endif

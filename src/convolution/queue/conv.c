@@ -6,10 +6,6 @@
 #include "queue.h"
 #include "seq/conv.h"
 
-#if OpenCL_SUPPORT
-#include "gpu/conv.h"
-#endif
-
 int count_files = 0;
 atomic_size_t index_file = 0;
 
