@@ -18,6 +18,8 @@
 ./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp id 1 0 gpu
 ```
 
+> To use the gpu mode: set ```-DOPENCL_SUPPORT=ON``` in [scripts/build.sh](scripts/build.sh).
+
 # Test
 
 ```shell
@@ -36,29 +38,35 @@
 
 ##### Comparasion of *sequential* and all modes *parallel* convolutions in the same bmp and options (filter, factor, bias)
 
-![Plot 1](perf_test/saved_plots/nature_box-bl.png)
+| Plot 1 (640x426) | Plot 2 (2560x1600) |
+| :---: | :---: |
+| ![Plot 1](perf_test/saved_plots/seq-par_nature_box-bl.png) | ![Plot 2](perf_test/saved_plots/seq-par_linux_box-bl.png) |
 
-`Plot 1` shows that any parallel implementation outperforms the sequential one two times. As for the best parallel mode, row - the fastest, column - the most compact.
+Plots shows that any parallel implementation outperforms the sequential one two times. As for the best parallel mode: row - the fastest, pixel - the most compact. It is worth noting that as the size of the bmp increases, the gpu implementation shows results better than the parallel implementation, while the gpu performs worse than the sequential implementation for small calculations.
 
 ##### Comparasion of *parallel* convolutions in the same bmp and options with different *number of threads*
 
-![Plot 2](perf_test/saved_plots/nature-bm_box-bm.png)
+| Plot 3 (640x426) | Plot 4 (1800x1200) |
+| :---:  | :---:  |
+| ![Plot 3](perf_test/saved_plots/threads_nature_box-bm.png) | ![Plot 4](perf_test/saved_plots/threads_win_box-bm.png) |
 
-`Plot 2` shows that then more threads there are, the faster. However, different between 4, 8 and 16 threads is not  as large as between 1, 2 and 4. The most compact case is the case with 4 threads.
+Plots shows that then more threads there are, the faster. However, different between 4, 8 and 16 threads is not  as large as between 1, 2 and 4. The most compact case is the case with 8 threads.
 
 ##### Comparasion of sequential launch *parallel* and *queue* convolutions in the same bmps, options and 6 threads (in queue: readers + workers + writers)
 
-![Plot 3](perf_test/saved_plots/queue_box-bm.png)
+![Plot 5](perf_test/saved_plots/queue_box-bm.png)
 
-`Plot 3` shows that the parallel implemenatation outperforms the queue with any variations. The best variation queue is variation with 3 worker threads, the worst variation queue is with 1 worker threads. As for the most compact variation queue, this is the variation "1-3-2".
+`Plot 5 (queue)` shows that the parallel implemenatation outperforms the queue with any variations. The best variation queue is variation with 3 worker threads, the worst variation queue is with 1 worker threads. As for the most compact variation queue, this is the variation "1-3-2". In the end, the parallel implementation is better than any queue variation.
 
 > The number of library runs for each test case is 30. The time limit for each file is 2 seconds.
 
-> All tests were performed on MacBook Air M1 on 09.06.2025 on eaa54d0ff181625caad49aa5d7a1ae1dec34406d commit.
+> All tests were performed on MacBook Air M1 on 09.10.2025 on bd3fdeed994f4217d466130b87724e63c7c28d4b commit.
+
+> See more plots in [renewing](perf_test/plots) and [saved](perf_test/saved_plots).
 
 ## Thanks
 
-Thanks [Mattflow](https://github.com/mattflow/cbmp?ysclid=m9104rn4ej835090391) for C library for reading, manipulating, and saving BMP images.
+Thanks [Mattflow](https://github.com/mattflow/cbmp?ysclid=m9104rn4ej835090391) for C library for reading, manipulating, and saving bmp.
 
 ## License
 

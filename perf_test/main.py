@@ -1,11 +1,10 @@
 import subprocess
 import sys
-from time import perf_counter
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-from perf_test.test import *
+from perf_test.tests import *
 from perf_test.utils import *
 
 COUNT_TESTS = 30
@@ -27,14 +26,24 @@ def exec(path_file_in, path_file_out, filter, type, mode="", count_ths=""):
     for _ in range(0, COUNT_TESTS):
         try:
             result = subprocess.run(
-                [path_exec, path_file_in, path_file_out, filter, factor, bias, type, mode, count_ths],
+                [
+                    path_exec,
+                    path_file_in,
+                    path_file_out,
+                    filter,
+                    factor,
+                    bias,
+                    type,
+                    mode,
+                    count_ths,
+                ],
                 capture_output=True,
                 text=True,
                 timeout=LIMIT_TIME,
             )
 
             # if result.stderr:
-                # print("Output:\n", result.stderr, sep="")
+            # print("Output:\n", result.stderr, sep="")
             if not result.returncode:
                 data.append(get_time(result.stderr))
         except subprocess.TimeoutExpired:
@@ -52,8 +61,17 @@ def run_test_case_single(arr_data, labels, test_case, files_parsed, dir_to_save)
         for name_file in files_parsed:
             try:
                 result = subprocess.run(
-                    [path_exec, path_dir_in + name_file, path_dir_out + name_file, test_case[0],
-                     factor, bias, test_case[1], test_case[2], test_case[3]],
+                    [
+                        path_exec,
+                        path_dir_in + name_file,
+                        path_dir_out + name_file,
+                        test_case[0],
+                        factor,
+                        bias,
+                        test_case[1],
+                        test_case[2],
+                        test_case[3],
+                    ],
                     capture_output=True,
                     text=True,
                     timeout=LIMIT_TIME,
@@ -61,7 +79,7 @@ def run_test_case_single(arr_data, labels, test_case, files_parsed, dir_to_save)
 
                 time += get_time(result.stderr)
                 # if result.stderr:
-                    # print("Output:\n", result.stderr, sep="")
+                # print("Output:\n", result.stderr, sep="")
             except subprocess.TimeoutExpired:
                 print("Error: timeout expired")
                 continue
@@ -78,15 +96,25 @@ def run_test_case_queue(arr_data, labels, test_case, dir_to_save):
     for _ in range(0, COUNT_TESTS):
         try:
             result = subprocess.run(
-                [path_exec, path_dir_in, path_dir_out, test_case[0],
-                 factor, bias, test_case[1], test_case[2], test_case[3], test_case[4]],
+                [
+                    path_exec,
+                    path_dir_in,
+                    path_dir_out,
+                    test_case[0],
+                    factor,
+                    bias,
+                    test_case[1],
+                    test_case[2],
+                    test_case[3],
+                    test_case[4],
+                ],
                 capture_output=True,
                 text=True,
                 timeout=LIMIT_TIME * COUNT_TESTS,
             )
 
             # if result.stderr:
-                # print("Output:\n", result.stderr, sep="")
+            # print("Output:\n", result.stderr, sep="")
         except subprocess.TimeoutExpired:
             print("Error: timeout expired")
             continue
@@ -101,50 +129,63 @@ def main():
 
     index = 0
     tests = [test_bl__seq_par, test_par_row_bm__ths]
-    for name_file in files_parsed:
-        dir_to_save = path_save_plot + name_file[:-4] + "/"
-        create_dir(dir_to_save)
+    for test in tests:
+        dir_to_save_dir = path_save_plot + test[0] + "/"
 
-        test = tests[index]
-        arr_data = []
-        labels = []
-        print(f"Running {index + 1} test")
-        for test_case in test:
-            data = exec(
-                path_dir_in + name_file,
-                path_dir_out + name_file,
-                test_case[0],
-                test_case[1],
-                test_case[2],
-                test_case[3],
-            )
-            if len(data) == 0:
+        for name_file in files_parsed:
+            dir_to_save_files = dir_to_save_dir + name_file[:-4] + "/"
+            create_dir(dir_to_save_files)
+
+            arr_data = []
+            labels = []
+            print(f"Running {index + 1} test")
+            for test_case in test[1]:
+                data = exec(
+                    path_dir_in + name_file,
+                    path_dir_out + name_file,
+                    test_case[0],
+                    test_case[1],
+                    test_case[2],
+                    test_case[3],
+                )
+                if len(data) == 0:
+                    continue
+
+                output_test_case(arr_data, labels, test_case, data, dir_to_save_files)
+
+            if len(arr_data) == 0:
                 continue
 
-            output_test_case(arr_data, labels, test_case, data, dir_to_save)
+            output_test(
+                arr_data,
+                labels,
+                name_file[:-4] + f" ({test_case[0]})",
+                test_case[0],
+                dir_to_save_files,
+            )
 
-        if len(arr_data) == 0:
-            continue
+            index += 1
 
-        output_test(arr_data, labels, test, dir_to_save)
+    # dir_to_save = "perf_test/plots/queue/"
+    # create_dir(dir_to_save)
+    # arr_data = []
+    # labels = []
 
-        index += 1
-        if index == len(tests):
-            break
+    # print(f"Running {index + 1} test")
+    # title = test_bm_6_ths__par_queue[0]
+    # test = test_bm_6_ths__par_queue[1]
 
-    dir_to_save = "perf_test/plots/queue/"
-    create_dir(dir_to_save)
-    arr_data = []
-    labels = []
+    # run_test_case_single(arr_data, labels, test[0], files_parsed, dir_to_save)
+    # for test_case in test[1:]:
+    #     run_test_case_queue(arr_data, labels, test_case, dir_to_save)
 
-    print(f"Running {index + 1} test")
-    test = test_bm_6_ths__par_queue
-
-    run_test_case_single(arr_data, labels, test[0], files_parsed, dir_to_save)
-    for test_case in test[1:]:
-        run_test_case_queue(arr_data, labels, test_case, dir_to_save)
-
-    output_test(arr_data, labels, test_bm_6_ths__par_queue, dir_to_save)
+    # output_test(
+    #     arr_data,
+    #     labels,
+    #     title + f" ({test[0][0]})",
+    #     test[0][0],
+    #     dir_to_save,
+    # )
 
 
 if __name__ == "__main__":

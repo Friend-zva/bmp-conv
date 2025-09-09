@@ -1,2 +1,2 @@
 // clang-format off
-#define BMP_PATH "@CMAKE_SOURCE_DIR@/bmps/source/nature.bmp"
+#define BMP_PATH "@CMAKE_SOURCE_DIR@/bmps/source/nature-640x426.bmp"
