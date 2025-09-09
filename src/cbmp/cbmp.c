@@ -1,4 +1,3 @@
-// NOLINTBEGIN
 // clang-format off
 #include <stdlib.h>
 #include <stdio.h>
@@ -314,4 +313,3 @@ void _get_pixel(BMP* bmp, int index, int offset, int channel)
             break;
     }
 }
-// NOLINTEND

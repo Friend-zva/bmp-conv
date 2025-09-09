@@ -11,17 +11,17 @@ def create_hist(data, title, path):
     print(f"Histogram '{title}' created")
 
 
-def create_boxplot(data, labels, title, path):
+def create_boxplot(data, labels, title, name, path):
     plt.figure(figsize=(10, 6))
     plt.boxplot(data, tick_labels=labels, notch=False)
     plt.title(title)
     plt.grid(True)
-    plt.savefig(path + "box-" + title + ".png")
+    plt.savefig(path + "box-" + name + ".png")
     plt.close()
     print(f"Boxplot '{title}' created")
 
 
-def create_bar(data, labels, title, path):
+def create_bar(data, labels, title, name, path):
     means = [numpy.mean(test) for test in data]
     stds = [numpy.std(test) for test in data]
 
@@ -29,11 +29,12 @@ def create_bar(data, labels, title, path):
     plt.bar(labels, means, yerr=stds, capsize=5)
     plt.title(title)
     plt.grid(True)
-    plt.savefig(path + "bar-" + title + ".png")
+    plt.savefig(path + "bar-" + name + ".png")
     plt.close()
     print(f"Bar '{title}' created")
 
-# def create_scatter(data, labels, title, path):
+
+# def create_scatter(data, labels, title, name, path):
 #     plt.figure(figsize=(10, 6))
 #     for i, test in enumerate(data):
 #         x = numpy.random.normal(i + 1, 0.05, len(test))
@@ -42,6 +43,6 @@ def create_bar(data, labels, title, path):
 #     plt.xticks(range(1, len(names_test) + 1), names_test)
 #     plt.title(title)
 #     plt.grid(True)
-#     plt.savefig(path + "scatter-" + title + ".png")
+#     plt.savefig(path + "scatter-" + name + ".png")
 #     plt.close()
 #     print(f"Scatter '{title}' created")

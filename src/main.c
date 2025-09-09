@@ -8,7 +8,7 @@
 
 #define fpr_err(...) (fprintf(stderr, __VA_ARGS__))
 
-Options *parse_opts(char **argv) {
+Options *parse_opts_convert(char **argv) {
     Options *opt = (Options *)malloc(sizeof(Options));
     if (opt == NULL) {
         fpr_err(ERROR_MALLOC);
@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    Options *opt = parse_opts(argv);
+    Options *opt = parse_opts_convert(argv);
     if (opt == NULL) {
         return 1;
     }
