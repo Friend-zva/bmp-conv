@@ -179,7 +179,6 @@ int main(int argc, char **argv) {
         free_options(opt);
         return 1;
     }
-
     free_options(opt);
     return 0;
 }

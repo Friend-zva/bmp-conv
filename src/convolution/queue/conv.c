@@ -73,12 +73,7 @@ void conv_parallel(void *_data) {
             continue;
         }
 
-#if OpenCL_SUPPORT
-        BMP *bmp_conv = conv_gpu_seq(data_q->bmp_source, opt);
-#else
         BMP *bmp_conv = conv_seq(data_q->bmp_source, opt);
-#endif
-
         if (bmp_conv == NULL) {
             continue;
         }
