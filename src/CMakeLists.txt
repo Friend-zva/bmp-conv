@@ -1,4 +1,3 @@
-set_source_files_properties(cbmp/cbmp.c PROPERTIES SKIP_LINTING ON)
 add_library(cbmp cbmp/cbmp.c)
 target_include_directories(cbmp PUBLIC cbmp)
 

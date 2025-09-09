@@ -1,3 +1,7 @@
+#if !OpenCL_SUPPORT
+// NOLINTBEGIN
+#endif
+
 #include "conv.h"
 
 #include <stdio.h>
@@ -67,7 +71,6 @@ BMP *cleanup_and_return(BMP *bmp_conv, float *matrix, char *source_kernel,
     return NULL;
 }
 
-// NOLINTBEGIN
 BMP *conv_gpu_seq(BMP *bmp, Options opt) {
     BMP *bmp_conv = b_create(bmp);
     if (bmp_conv == NULL) {
@@ -187,7 +190,6 @@ BMP *conv_gpu_seq(BMP *bmp, Options opt) {
                               data_conv, &buf_source, &buf_conv, &buf_matrix_f,
                               &kernel, &program, &queue, &context, &device, 1);
 }
-// NOLINTEND
 
 int conv_gpu_seq_mode(char **argv, Options opt) {
     double time_start = get_time();
@@ -213,3 +215,7 @@ int conv_gpu_seq_mode(char **argv, Options opt) {
     bclose(bmp_conv);
     return 0;
 }
+
+#if !OpenCL_SUPPORT
+// NOLINTEND
+#endif
