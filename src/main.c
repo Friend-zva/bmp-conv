@@ -167,7 +167,7 @@ int main(int argc, char **argv) {
             free_options(opt);
             return 1;
         }
-#if OpenCL_SUPPORT
+#if OpenCL_SUPPORT == 1
     } else if (strcmp(argv[index_arg], "gpu") == 0) {
         if (conv_gpu_seq_mode(argv, *opt)) {
             free_options(opt);

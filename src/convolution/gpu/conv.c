@@ -1,7 +1,3 @@
-#if !OpenCL_SUPPORT
-// NOLINTBEGIN
-#endif
-
 #include "conv.h"
 
 #include <stdio.h>
@@ -215,7 +211,3 @@ int conv_gpu_seq_mode(char **argv, Options opt) {
     bclose(bmp_conv);
     return 0;
 }
-
-#if !OpenCL_SUPPORT
-// NOLINTEND
-#endif

@@ -5,6 +5,12 @@ include(CMakePrintHelpers)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if(OPENCL_SUPPORT)
+    add_compile_definitions(OpenCL_SUPPORT=1)
+else()
+    add_compile_definitions(OpenCL_SUPPORT=0)
+endif()
+
 add_subdirectory(src)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/cmocka")
