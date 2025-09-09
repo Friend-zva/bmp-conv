@@ -1,5 +1,5 @@
-file(GLOB_RECURSE SOURCES_C ./*.c)
-list(REMOVE_ITEM SOURCES_C ./main.c)
+file(GLOB_RECURSE SOURCES_C *.c)
+list(REMOVE_ITEM SOURCES_C main.c)
 
 add_library(utils ${SOURCES_C})
 target_link_libraries(utils PUBLIC
