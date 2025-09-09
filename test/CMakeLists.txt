@@ -1,7 +1,7 @@
-file(GLOB_RECURSE C_SOURCES ./*.c)
-list(REMOVE_ITEM C_SOURCES ./main.c)
+file(GLOB_RECURSE SOURCES_C ./*.c)
+list(REMOVE_ITEM SOURCES_C ./main.c)
 
-add_library(utils ${C_SOURCES})
+add_library(utils ${SOURCES_C})
 target_link_libraries(utils PUBLIC
         convolution
         options
