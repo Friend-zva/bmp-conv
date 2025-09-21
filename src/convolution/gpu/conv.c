@@ -105,7 +105,7 @@ BMP *conv_gpu_seq(BMP *bmp, Options opt) {
     cl_program program = clCreateProgramWithSource(
         context, 1, (const char **)&source_kernel, NULL, NULL);
     clBuildProgram(program, 1, &device, NULL, NULL, NULL);
-    cl_kernel kernel = clCreateKernel(program, "apply_filter_tiled", NULL);
+    cl_kernel kernel = clCreateKernel(program, "apply_filter", NULL);
 
     int height = get_height(bmp);
     int width = get_width(bmp);
