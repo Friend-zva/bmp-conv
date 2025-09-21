@@ -12,10 +12,10 @@
 # Usage
 
 ```shell
-./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp id 1 0 seq
-./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp id 1 0 par row 8
+./build/src/main bmps/source/nature-640x426.bmp bmps/result/nature-640x426.bmp id 1 0 seq
+./build/src/main bmps/source/nature-640x426.bmp bmps/result/nature-640x426.bmp id 1 0 par row 8
 ./build/src/main bmps/source bmps/result id 1 0 queue 2 2 2
-./build/src/main bmps/source/nature.bmp bmps/result/nature.bmp id 1 0 gpu
+./build/src/main bmps/source/nature-640x426.bmp bmps/result/nature-640x426.bmp id 1 0 gpu
 ```
 
 > To use the gpu mode: set ```-DOPENCL_SUPPORT=ON``` in [scripts/build.sh](scripts/build.sh).
@@ -60,7 +60,7 @@ Plots shows that then more threads there are, the faster. However, different bet
 
 > The number of library runs for each test case is 30. The time limit for each file is 2 seconds.
 
-> All tests were performed on MacBook Air M1 on 09.10.2025 on bd3fdeed994f4217d466130b87724e63c7c28d4b commit.
+> All tests were performed on MacBook Air M1 on 22.09.2025 on 654261928070b0c0ce484bbeef5f86fb5aef3deb commit.
 
 > See more plots in [renewing](perf_test/plots) and [saved](perf_test/saved_plots).
 
