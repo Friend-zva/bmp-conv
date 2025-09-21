@@ -166,26 +166,26 @@ def main():
 
             index += 1
 
-    # dir_to_save = "perf_test/plots/queue/"
-    # create_dir(dir_to_save)
-    # arr_data = []
-    # labels = []
+    dir_to_save = "perf_test/plots/queue/"
+    create_dir(dir_to_save)
+    arr_data = []
+    labels = []
 
-    # print(f"Running {index + 1} test")
-    # title = test_bm_6_ths__par_queue[0]
-    # test = test_bm_6_ths__par_queue[1]
+    print(f"Running {index + 1} test")
+    title = test_bm_6_ths__par_queue[0]
+    test = test_bm_6_ths__par_queue[1]
 
-    # run_test_case_single(arr_data, labels, test[0], files_parsed, dir_to_save)
-    # for test_case in test[1:]:
-    #     run_test_case_queue(arr_data, labels, test_case, dir_to_save)
+    run_test_case_single(arr_data, labels, test[0], files_parsed, dir_to_save)
+    for test_case in test[1:]:
+        run_test_case_queue(arr_data, labels, test_case, dir_to_save)
 
-    # output_test(
-    #     arr_data,
-    #     labels,
-    #     title + f" ({test[0][0]})",
-    #     test[0][0],
-    #     dir_to_save,
-    # )
+    output_test(
+        arr_data,
+        labels,
+        title + f" ({test[0][0]})",
+        test[0][0],
+        dir_to_save,
+    )
 
 
 if __name__ == "__main__":
